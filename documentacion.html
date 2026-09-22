@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<title>Documentación del Proyecto: Turin Sport · Turnero y Control de Stock</title>
+<meta name="description" content="Carpeta del Proyecto Turin Sport: turnero digital de canchas y control de stock del kiosco. Requisitos, arquitectura, modelo de datos, gestión y oferta económica.">
+<style>
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin:1rem 0}
+.member{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:1rem;text-align:center}
+.m-photo{display:block;width:84px;height:84px;margin:0 auto .6rem;border-radius:50%;background:#e9eee9;border:2px dashed var(--ink3);object-fit:cover}
+.member b{display:block;font-family:var(--disp);font-size:1.05rem}
+.member span{font-size:.85rem;color:var(--ink2)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin:1rem 0}
+.cards>div{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+.cards b{display:block;font-family:var(--disp);font-size:1.08rem;margin-bottom:.2rem}
+.cards p{margin:0;color:var(--ink2);font-size:.95rem}
+.mod{display:inline-block;font-family:var(--disp);font-weight:700;font-size:.8rem;padding:.05rem .45rem;border-radius:4px;vertical-align:2px;margin-right:.25rem}
+.mod.t{background:var(--red-l);color:var(--red)}
+.mod.k{background:var(--gold-l);color:#8a5b00}
+.shot{border:2px dashed var(--ink3);border-radius:10px;padding:1.4rem;text-align:center;color:var(--ink3);background:var(--paper);margin:1rem 0}
+.utn{font-size:.72rem;font-weight:700;color:var(--ink3);font-family:var(--body);vertical-align:3px;margin-left:.4rem}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">TURIN SPORT</a>
+  <nav aria-label="Secciones">
+    <a href="index.html" data-p="index">Inicio</a>
+    <a href="documentacion.html" data-p="documentacion" aria-current="page">Documentación</a>
+    <a href="manual.html" data-p="manual">Manual de usuario</a>
+    <a href="faq.html" data-p="faq">Preguntas frecuentes</a>
+    <a href="https://canchasgod-production.up.railway.app/">Turnero</a>
+    <a href="https://control-de-stock-proyecto-production.up.railway.app/">Kiosco</a>
+  </nav>
+</header>
+
+<div class="doc">
+<nav class="toc" aria-label="Contenidos">
+  <b>Primera sección</b>
+  <a href="#s1">1 · Control de Cambios</a>
+  <a href="#s2">2 · Diagnóstico: Árbol de Problemas</a>
+  <a href="#s3">3 · Introducción</a>
+  <a class="sub" href="#s3-1">3.1 Propósito</a>
+  <a class="sub" href="#s3-2">3.2 Alcance</a>
+  <a class="sub" href="#s3-3">3.3 Personal Involucrado</a>
+  <a class="sub" href="#s3-4">3.4 Definiciones y acrónimos</a>
+  <a class="sub" href="#s3-5">3.5 Referencias</a>
+  <a class="sub" href="#s3-6">3.6 Resumen Ejecutivo</a>
+  <b>Segunda sección</b>
+  <a href="#s4">4 · Descripción General</a>
+  <a class="sub" href="#s4-1">4.1 Perspectiva</a>
+  <a class="sub" href="#s4-2">4.2 Funcionalidad</a>
+  <a class="sub" href="#s4-3">4.3 Usuarios</a>
+  <a class="sub" href="#s4-4">4.4 Restricciones</a>
+  <a class="sub" href="#s4-5">4.5 Suposiciones</a>
+  <a class="sub" href="#s4-6">4.6 Evolución previsible</a>
+  <b>Tercera sección</b>
+  <a href="#s5">5 · Requisitos Específicos</a>
+  <a class="sub" href="#s5-1">5.1 Funcionales</a>
+  <a class="sub" href="#s5-2">5.2 Interfaz de usuario</a>
+  <a class="sub" href="#s5-3">5.3 Interfaz de hardware</a>
+  <a class="sub" href="#s5-4">5.4 Interfaz de software</a>
+  <a class="sub" href="#s5-5">5.5 Comunicación</a>
+  <a class="sub" href="#s5-6">5.6 Modelo Entidad-Relación</a>
+  <a class="sub" href="#s5-7">5.7 Diagrama de flujo</a>
+  <a href="#s6">6 · Oferta de Gestión</a>
+  <a href="#s7">7 · Oferta Económica</a>
+  <a href="#s8">8 · Estimación Económica</a>
+  <a href="#s9">9 · Contrato</a>
+  <b>Seguimiento</b>
+  <a href="#s10">10 · Bitácora del Proyecto</a>
+  <a class="sub" href="#s10-1">10.1 Registro de Entrevistas</a>
+  <a class="sub" href="#s10-2">10.2 Minutas de Reunión</a>
+  <a class="sub" href="#s10-3">10.3 Cambios del Mockup</a>
+  <a class="sub" href="#s10-4">10.4 Avances Técnicos</a>
+  <b>Guía de uso</b>
+  <a href="#s11">11 · Guía de Inicio Rápido</a>
+  <a href="#s12">12 · Preguntas Frecuentes</a>
+</nav>
+
+<main class="content">
+<p style="color:var(--ink3);font-size:.9rem">Carpeta del Proyecto · Documentación</p>
+<h1>Turin Sport: turnero digital y control de stock del kiosco</h1>
+<p class="lead">Documentación técnica, operativa y económica del proyecto. Dos sistemas web para el complejo deportivo Turin Sport: un turnero que muestra las reservas de las canchas en una pantalla y un control de stock para el kiosco de las sedes.</p>
+
+<dl class="meta">
+  <dt>Cliente</dt><dd>Turin Sport, complejo deportivo. Sede 1: San Leonardo Murialdo 909 · Sede 2: La Cautiva 7654</dd>
+  <dt>Materia</dt><dd>Evaluación de Proyectos</dd>
+  <dt>Docente</dt><dd>Prof. Pedaci, Lourdes</dd>
+  <dt>Ciclo</dt><dd>7mo Informática 2026 · Instituto Leonardo Murialdo</dd>
+  <dt>Accesos</dt><dd>Turnero: <a href="https://canchasgod-production.up.railway.app/">canchasgod-production.up.railway.app</a> · Kiosco: <a href="https://control-de-stock-proyecto-production.up.railway.app/">control-de-stock-proyecto-production.up.railway.app</a><br>GitHub: <a href="https://github.com/pedrocaseres088-ai/canchasgod">turnero</a> · <a href="https://github.com/pedrocaseres088-ai/control-de-stock-proyecto">control de stock</a></dd>
+  <dt>Módulos</dt><dd><span class="mod t">Turnero</span> turnos de canchas · <span class="mod k">Kiosco</span> control de stock</dd>
+</dl>
+
+<div class="note"><strong>Sobre este documento</strong>Sigue la estructura de la Carpeta del Proyecto definida en el módulo de Documentación de la materia. Los apartados que el módulo marca con página del libro <em>Buenas Prácticas para Proyectos Informáticos</em> (UTN, edUTecNe, 2012) respetan el formato de tabla de esa fuente. El proyecto es solo de software: los apartados pensados para hardware se adaptan y se aclara el motivo en cada caso. Cuando un requisito aplica a un solo sistema, se marca con <span class="mod t">Turnero</span> o <span class="mod k">Kiosco</span>.</div>
+
+<!-- ================= 1 ================= -->
+<h2 id="s1">1. Control de Cambios</h2>
+<p>Registro de las modificaciones realizadas sobre la documentación y el alcance del proyecto, con fecha, responsable y detalle del cambio. Cada validación con el cliente que derive en un cambio de requerimiento se anota como una fila nueva.</p>
+<div class="tw"><table>
+<thead><tr><th>Versión</th><th>Fecha</th><th>Responsable</th><th>Detalle del cambio</th></tr></thead>
+<tbody>
+<tr><td>0.1</td><td>Pendiente</td><td>Equipo</td><td>Versión inicial a partir de la primera entrevista con Turin Sport: turnero para las dos sedes.</td></tr>
+<tr><td>1.0</td><td>Pendiente</td><td>Equipo</td><td><span class="mod t">Turnero</span> Primera versión publicada en Alwaysdata: pantalla del TV, panel con login y roles, API JSON y base MySQL.</td></tr>
+<tr><td>1.1</td><td>10/09/2026</td><td>Equipo</td><td><span class="mod k">Kiosco</span> Alta del control de stock para el kiosco de las sedes: 29 productos en 4 categorías, alertas de reposición y sugerencias de compra.</td></tr>
+<tr><td>1.2</td><td>Pendiente</td><td>Equipo</td><td><span class="mod t">Turnero</span> Migración a Railway con Docker y variables de entorno, por la pérdida de acceso a la cuenta de Alwaysdata.</td></tr>
+<tr><td>1.3</td><td>22/09/2026</td><td>Equipo</td><td><span class="mod t">Turnero</span> Pedidos del cliente: formulario en una columna, horarios solo en horas en punto y tipo de cancha (Fútbol 5, 7 y 11) exclusivo de La Cautiva (RF07, RF08, RF09).</td></tr>
+<tr><td>1.4</td><td>22/09/2026</td><td>Equipo</td><td>Nueva base MySQL en Railway, instalador <code>instalar.php</code> y publicación de la documentación, el manual, las FAQ y la landing.</td></tr>
+</tbody></table></div>
+<div class="note todo"><strong>A completar por el equipo</strong>Las fechas marcadas como pendientes se cargan con las fechas reales. Mantener una fila por cada cambio de alcance validado con el cliente.</div>
+
+<!-- ================= 2 ================= -->
+<h2 id="s2">2. Diagnóstico: Árbol de Problemas y Soluciones</h2>
+<p>Diagnóstico elaborado a partir del relevamiento en Turin Sport. Es la pieza que fundamenta las decisiones de diseño: el problema central y sus causas explican por qué el sistema hace lo que hace, y los medios del árbol de soluciones son el origen directo de los requerimientos.</p>
+<div class="note"><strong>Cómo se lee el árbol</strong>Se lee de abajo hacia arriba: las causas producen el problema central, y el problema central produce los efectos. El árbol de soluciones es su espejo: cada causa se convierte en un medio, y cada efecto en un fin medible.</div>
+
+<h4>Problema central</h4>
+<p>Turin Sport <strong>no tiene un registro ordenado ni visible de lo que pasa en el complejo</strong>: los turnos de las canchas se manejan a mano y solo los conoce recepción, y el stock del kiosco se controla a ojo, así que los productos se agotan sin aviso.</p>
+
+<h4>Causas</h4>
+<div class="tw"><table>
+<thead><tr><th>Causa</th><th>Qué se observó en el relevamiento</th></tr></thead>
+<tbody>
+<tr><td><strong>Turnos anotados a mano</strong> <span class="mod t">Turnero</span></td><td>Los turnos se registran en papel o mensajes, sin un criterio común entre las dos sedes.</td></tr>
+<tr><td><strong>La información queda en recepción</strong> <span class="mod t">Turnero</span></td><td>El jugador no ve qué se juega ni qué horarios quedan libres: tiene que preguntar.</td></tr>
+<tr><td><strong>Canchas de distinto tamaño sin identificar</strong> <span class="mod t">Turnero</span></td><td>La Cautiva tiene canchas de Fútbol 5, 7 y 11, y el turno no indicaba cuál se alquilaba.</td></tr>
+<tr><td><strong>El stock no se cuenta</strong> <span class="mod k">Kiosco</span></td><td>Nadie lleva la cantidad de cada producto; se nota la falta cuando un cliente lo pide.</td></tr>
+<tr><td><strong>Compras sin criterio</strong> <span class="mod k">Kiosco</span></td><td>Se compra por intuición, sin relacionar lo que se vende en el fin de semana con lo que hay que reponer.</td></tr>
+</tbody></table></div>
+
+<h4>Efectos</h4>
+<div class="tw"><table>
+<thead><tr><th>Efecto</th><th>Cómo se manifiesta hoy (línea de base)</th></tr></thead>
+<tbody>
+<tr><td><strong>Consultas repetidas en recepción</strong></td><td>A completar: consultas por día sobre horarios y canchas.</td></tr>
+<tr><td><strong>Confusión de cancha o de horario</strong></td><td>A completar: casos por semana.</td></tr>
+<tr><td><strong>Horarios libres que nadie ve</strong></td><td>No hay forma de saber qué turnos quedan disponibles fuera de recepción.</td></tr>
+<tr><td><strong>Ventas perdidas por falta de producto</strong></td><td>A completar: productos agotados por fin de semana.</td></tr>
+<tr><td><strong>Compras de más o de menos</strong></td><td>Sin datos de venta semanal, no se sabe cuántos packs comprar.</td></tr>
+</tbody></table></div>
+
+<h4>Árbol de soluciones</h4>
+<div class="note"><strong>Objetivo central</strong>Dar a Turin Sport un <strong>registro digital y visible</strong> de los turnos de sus canchas y del stock de su kiosco, que se use desde el celular o la PC sin conocimientos técnicos.</div>
+<div class="tw"><table>
+<thead><tr><th>Medio</th><th>Causa que neutraliza</th></tr></thead>
+<tbody>
+<tr><td><strong>Panel web de turnos</strong><br>Carga, edición y borrado por día y por sede.</td><td>Turnos anotados a mano.</td></tr>
+<tr><td><strong>Pantalla del TV</strong><br>Turnos del día con colores por estado.</td><td>La información queda en recepción.</td></tr>
+<tr><td><strong>Campo tipo de cancha</strong><br>Obligatorio solo en La Cautiva.</td><td>Canchas de distinto tamaño sin identificar.</td></tr>
+<tr><td><strong>Contador de stock por producto</strong><br>Botones + y − pensados para el celular.</td><td>El stock no se cuenta.</td></tr>
+<tr><td><strong>Punto de reposición y sugerencias</strong><br>Calculados a partir de la venta del fin de semana.</td><td>Compras sin criterio.</td></tr>
+</tbody></table></div>
+<div class="tw"><table>
+<thead><tr><th>Fin</th><th>Meta verificable</th><th>Punto de partida</th></tr></thead>
+<tbody>
+<tr><td><strong>Menos consultas en recepción</strong></td><td>A definir con el cliente.</td><td>A completar</td></tr>
+<tr><td><strong>Turnos visibles al instante</strong></td><td>Un turno cargado se ve en el TV en menos de 2 minutos.</td><td>No existía</td></tr>
+<tr><td><strong>Cero productos agotados sin aviso</strong></td><td>Todo producto con venta semanal avisa antes de quedar en 0.</td><td>A completar</td></tr>
+<tr><td><strong>Compras con cantidad sugerida</strong></td><td>Cada sugerencia indica cuántos packs comprar.</td><td>Compra por intuición</td></tr>
+</tbody></table></div>
+<div class="note warn"><strong>A validar con el cliente</strong>Los valores de línea de base (consultas por día, productos agotados) se completan con los datos de la entrevista.</div>
+
+<!-- ================= 3 ================= -->
+<h2 id="s3">3. Introducción</h2>
+<h3 id="s3-1">3.1. Propósito</h3>
+<p>El propósito del proyecto es ordenar dos tareas diarias de Turin Sport que hoy se hacen a mano. El <strong>turnero</strong> permite que recepción cargue los turnos de las canchas y que los jugadores los vean en una pantalla del complejo, sin tener que preguntar. El <strong>control de stock</strong> permite que quien atiende el kiosco lleve la cantidad de cada producto desde el celular y sepa qué y cuánto comprar antes de quedarse sin mercadería.</p>
+
+<h3 id="s3-2">3.2. Alcance</h3>
+<p>El proyecto <strong>incluye</strong>: la pantalla pública de turnos para el TV, el panel de administración con login y roles, la API de turnos, el control de stock del kiosco con sugerencias de compra, la publicación online de ambos sistemas en Railway y esta documentación.</p>
+<p>El proyecto <strong>no incluye</strong>: reservas o pagos hechos por los jugadores, registro de ventas o precios del kiosco, stock compartido entre varios dispositivos ni facturación. El detalle está en las Limitaciones (dentro de 5.1) y se formaliza en el Contrato (sección 9).</p>
+
+<h3 id="s3-3">3.3. Personal Involucrado</h3>
+<div class="tw"><table>
+<thead><tr><th>Rol</th><th>Responsabilidad principal</th><th>Integrante</th></tr></thead>
+<tbody>
+<tr><td><strong>Project Manager (PM)</strong></td><td>Planificación (GANTT), control de alcance y relación con el cliente.</td><td>A completar</td></tr>
+<tr><td><strong>Backend / BD</strong></td><td>PHP, API REST, MySQL y migraciones del turnero.</td><td>A completar</td></tr>
+<tr><td><strong>Frontend / UX-UI</strong></td><td>Pantalla del TV, panel de turnos y app de stock en React.</td><td>A completar</td></tr>
+<tr><td><strong>Infraestructura</strong></td><td>GitHub, Docker, Railway y dominios.</td><td>A completar</td></tr>
+<tr><td><strong>Cliente</strong></td><td>Valida requerimientos, prioriza y firma el contrato.</td><td>Turin Sport</td></tr>
+</tbody></table></div>
+
+<h3 id="s3-4">3.4. Definiciones, acrónimos y abreviaturas</h3>
+<div class="tw"><table>
+<thead><tr><th>Término</th><th>Definición</th></tr></thead>
+<tbody>
+<tr><td>Turno</td><td>Reserva de una cancha en una sede, un día y una franja horaria en punto.</td></tr>
+<tr><td>Sede</td><td>Cada ubicación del complejo: Murialdo (Sede 1) y La Cautiva (Sede 2).</td></tr>
+<tr><td>Tipo de cancha</td><td>Modalidad de la cancha: Fútbol 5, 7 u 11. Solo en La Cautiva.</td></tr>
+<tr><td>En juego</td><td>Turno reservado cuya hora de inicio coincide con la hora actual.</td></tr>
+<tr><td>Venta semanal</td><td>Unidades de un producto que el kiosco vende en un fin de semana típico (“Vende ~X/finde”).</td></tr>
+<tr><td>Punto de reposición</td><td>Cantidad a partir de la cual hay que reponer: el doble de la venta semanal.</td></tr>
+<tr><td>Pack</td><td>Unidad de compra al proveedor (por ejemplo, 6 botellas o 12 alfajores).</td></tr>
+<tr><td>API REST</td><td>Interfaz HTTP que devuelve datos en JSON; la usa la pantalla del TV.</td></tr>
+<tr><td>SPA</td><td>Single Page Application: aplicación web que funciona en una sola página, como la app de stock.</td></tr>
+<tr><td>localStorage</td><td>Espacio de guardado del navegador. La app de stock guarda ahí los datos.</td></tr>
+<tr><td>Railway</td><td>Plataforma en la nube donde se publican ambos sistemas.</td></tr>
+<tr><td>Docker</td><td>Herramienta que empaqueta el turnero con PHP y Apache.</td></tr>
+<tr><td>RF / RNF</td><td>Requerimiento Funcional / Requerimiento No Funcional.</td></tr>
+<tr><td>ISW / LIM</td><td>Interfaz de Software (componente) / Limitación del alcance.</td></tr>
+</tbody></table></div>
+
+<h3 id="s3-5">3.5. Referencias</h3>
+<p>Formato APA 7ª edición.</p>
+<ul>
+<li>Pedaci, L. (2026). <em>Evaluación de Proyectos - Módulo 01: El Proyecto y sus generalidades</em>. Instituto Leonardo Murialdo.</li>
+<li>Pedaci, L. (2026). <em>Evaluación de Proyectos - Módulo 02: Fases de un Proyecto</em>. Instituto Leonardo Murialdo.</li>
+<li>Pedaci, L. (2026). <em>Evaluación de Proyectos - Módulo de Documentación</em>. Instituto Leonardo Murialdo.</li>
+<li>Pedaci, L. (2026). <em>Lineamientos y Metodologías de Trabajo - Proyecto Tecnológico Interdisciplinario</em>. Instituto Leonardo Murialdo.</li>
+<li>Universidad Tecnológica Nacional. (2012). <em>Buenas Prácticas para Proyectos Informáticos</em>. edUTecNe. ISBN 978-987-1896-01-1.</li>
+<li>Railway Corp. (2026). <em>Railway Docs</em>. https://docs.railway.com</li>
+<li>Meta Open Source. (2026). <em>React</em>. https://react.dev</li>
+</ul>
+
+<h3 id="s3-6">3.6. Resumen Ejecutivo</h3>
+<p>Turin Sport es un complejo deportivo con dos sedes, canchas de Fútbol 5, 7 y 11 y un kiosco. El proyecto le entrega dos herramientas web que se usan desde el navegador. El turnero reemplaza la planilla de turnos por un panel y una pantalla en el complejo que muestra, en tiempo casi real, qué cancha está reservada, cuál está libre y qué se está jugando. El control de stock le da al kiosco un contador por producto que avisa cuándo reponer y cuántos packs comprar según lo que se vende el fin de semana.</p>
+<p><strong>Público objetivo:</strong> complejos deportivos chicos y medianos que gestionan turnos y un kiosco sin personal técnico. <strong>Resultados esperados:</strong> que los turnos se vean en el TV en menos de 2 minutos, que ningún producto con venta habitual se agote sin aviso y que las compras del kiosco sigan una cantidad sugerida.</p>
+
+<!-- ================= 4 ================= -->
+<h2 id="s4">4. Descripción General</h2>
+<h3 id="s4-1">4.1. Perspectiva del producto</h3>
+<p>Son dos <strong>sistemas nuevos</strong>: el complejo no tenía herramientas digitales para turnos ni para stock. No reemplazan otro software y funcionan de forma independiente, publicados en el mismo proyecto de Railway.</p>
+<figure>
+<svg viewBox="0 0 760 280" role="img" aria-label="Arquitectura de los dos módulos" font-family="Barlow, sans-serif" font-size="14">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16221b"/></marker></defs>
+  <text x="10" y="22" font-weight="700" fill="#d3342a" font-size="15">Turnero</text>
+  <rect x="10" y="32" width="200" height="80" rx="10" fill="#e3f1e7" stroke="#2d7a4b" stroke-width="2"/>
+  <text x="110" y="64" text-anchor="middle" font-weight="700" font-size="16">Navegador</text>
+  <text x="110" y="88" text-anchor="middle" fill="#48584e">Pantalla TV · Panel</text>
+  <rect x="280" y="32" width="200" height="80" rx="10" fill="#fcf1d9" stroke="#e3a019" stroke-width="2"/>
+  <text x="380" y="64" text-anchor="middle" font-weight="700" font-size="16">PHP 8.2 + Apache</text>
+  <text x="380" y="88" text-anchor="middle" fill="#48584e">Docker en Railway</text>
+  <rect x="550" y="32" width="200" height="80" rx="10" fill="#fbe7e5" stroke="#d3342a" stroke-width="2"/>
+  <text x="650" y="64" text-anchor="middle" font-weight="700" font-size="16">MySQL</text>
+  <text x="650" y="88" text-anchor="middle" fill="#48584e">sedes · turnos · usuarios</text>
+  <path d="M212 72 H276" stroke="#16221b" stroke-width="2" marker-end="url(#a)"/><text x="244" y="64" text-anchor="middle" font-size="12">HTTPS</text>
+  <path d="M482 72 H546" stroke="#16221b" stroke-width="2" marker-end="url(#a)"/><text x="514" y="64" text-anchor="middle" font-size="12">PDO</text>
+  <text x="10" y="152" font-weight="700" fill="#8a5b00" font-size="15">Kiosco</text>
+  <rect x="10" y="162" width="200" height="80" rx="10" fill="#e3f1e7" stroke="#2d7a4b" stroke-width="2"/>
+  <text x="110" y="194" text-anchor="middle" font-weight="700" font-size="16">Celular del kiosco</text>
+  <text x="110" y="218" text-anchor="middle" fill="#48584e">App React (SPA)</text>
+  <rect x="280" y="162" width="200" height="80" rx="10" fill="#fcf1d9" stroke="#e3a019" stroke-width="2"/>
+  <text x="380" y="194" text-anchor="middle" font-weight="700" font-size="16">serve (Node.js)</text>
+  <text x="380" y="218" text-anchor="middle" fill="#48584e">Archivos estáticos en Railway</text>
+  <rect x="550" y="162" width="200" height="80" rx="10" fill="#fbe7e5" stroke="#d3342a" stroke-width="2"/>
+  <text x="650" y="194" text-anchor="middle" font-weight="700" font-size="16">localStorage</text>
+  <text x="650" y="218" text-anchor="middle" fill="#48584e">en el mismo celular</text>
+  <path d="M276 202 H212" stroke="#16221b" stroke-width="2" marker-end="url(#a)"/><text x="244" y="194" text-anchor="middle" font-size="12">descarga</text>
+  <path d="M110 242 V264 H650 V246" stroke="#16221b" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#a)"/><text x="380" y="258" text-anchor="middle" font-size="12">guarda el stock</text>
+</svg>
+<figcaption>Figura 1. Arquitectura de los dos módulos. El kiosco descarga la app una vez y guarda los datos en el propio celular.</figcaption>
+</figure>
+
+<h3 id="s4-2">4.2. Funcionalidad del producto</h3>
+<ul>
+<li><span class="mod t">Turnero</span> Mostrar en el TV los turnos del día de las dos sedes, con reloj y colores por estado.</li>
+<li><span class="mod t">Turnero</span> Cargar, editar y borrar turnos de cualquier día desde un panel con contraseña.</li>
+<li><span class="mod t">Turnero</span> Indicar el tipo de cancha en La Cautiva.</li>
+<li><span class="mod k">Kiosco</span> Llevar el stock de 29 productos en 4 categorías, con búsqueda y filtro.</li>
+<li><span class="mod k">Kiosco</span> Avisar qué productos hay que reponer y sugerir cuántos packs comprar.</li>
+<li><span class="mod k">Kiosco</span> Sumar al stock lo comprado con un solo toque.</li>
+</ul>
+
+<h3 id="s4-3">4.3. Características de los Usuarios <span class="utn">Buenas Prácticas UTN p.56/57</span></h3>
+<div class="tw"><table>
+<thead><tr><th>Tipo de usuario</th><th>Formación</th><th>Actividades</th></tr></thead>
+<tbody>
+<tr><td><strong>Administrador</strong></td><td>Dueño o encargado del complejo. Uso básico de PC y celular.</td><td><span class="mod t">Turnero</span> Acceso total al panel de turnos de ambas sedes.</td></tr>
+<tr><td><strong>Recepción</strong></td><td>Personal de atención. Uso básico de PC.</td><td><span class="mod t">Turnero</span> Carga, edita y borra turnos durante el día.</td></tr>
+<tr><td><strong>Encargado del kiosco</strong></td><td>Personal del kiosco. Usa el celular a diario.</td><td><span class="mod k">Kiosco</span> Descuenta lo que se vende, ajusta el stock y revisa las sugerencias de compra.</td></tr>
+<tr><td><strong>Jugadores y público</strong></td><td>Sin requisitos.</td><td><span class="mod t">Turnero</span> Solo miran la pantalla del TV.</td></tr>
+</tbody></table></div>
+
+<h3 id="s4-4">4.4. Restricciones <span class="utn">Buenas Prácticas UTN p.57</span></h3>
+<h4>4.4.1. Políticas reguladoras</h4>
+<p>Todo el proyecto usa software libre (PHP, Apache, MySQL, React, Vite, Node.js). No hay costo de licencias. El único gasto recurrente es el alojamiento en Railway. El código se publica en GitHub.</p>
+<h4>4.4.2. Limitaciones de hardware</h4>
+<p>El turnero necesita un TV o monitor con navegador por sede e Internet. El kiosco necesita un celular o tablet con navegador. No hay hardware a medida.</p>
+<h4>4.4.3. Interfaces con otras aplicaciones</h4>
+<p>Los sistemas no se integran con software externo (facturación, pagos, proveedores). Entre ellos tampoco comparten datos.</p>
+<h4>4.4.4. Función de control</h4>
+<p><span class="mod t">Turnero</span> El panel exige usuario y contraseña con dos roles, <code>admin</code> y <code>recepcion</code>; el servidor verifica el rol antes de guardar o borrar. <span class="mod k">Kiosco</span> No tiene login: se protege por el acceso físico al celular del kiosco.</p>
+<h4>4.4.5. Requisitos del lenguaje</h4>
+<p>Toda la interfaz está en español y usa el vocabulario del complejo: turno, cancha, sede, reponer, pack. Los estados se comunican con palabras y colores (“Reservado”, “En juego”, “3 a reponer”, “Todo ok”).</p>
+<h4>4.4.6. Protocolos señalados</h4>
+<p>HTTPS entre el navegador y Railway. El turnero expone una API REST en JSON y se conecta a MySQL por PDO dentro de la red privada de Railway.</p>
+<h4>4.4.7. Requisitos de fiabilidad</h4>
+<p><span class="mod t">Turnero</span> Si la pantalla pierde conexión, muestra datos de ejemplo en lugar de quedar en blanco y reintenta cada 2 minutos. <span class="mod k">Kiosco</span> Los datos se guardan en el celular después de cada cambio, así que no se pierden al cerrar la app.</p>
+<h4>4.4.8. Credibilidad de la aplicación</h4>
+<p>La pantalla del turnero se recalcula sola cada 20 segundos para que “En juego” coincida con el reloj. En el kiosco, el número de stock se anima al sumar o restar, para confirmar que el toque se registró.</p>
+<h4>4.4.9. Consideraciones de seguridad</h4>
+<p>Contraseñas guardadas con hash bcrypt, consultas preparadas contra inyección SQL, salida escapada con <code>htmlspecialchars</code> y conexión a la base configurada por variables de entorno, sin datos sensibles en el código.</p>
+
+<h3 id="s4-5">4.5. Suposiciones y dependencias</h3>
+<ul>
+<li>Se asume Internet estable en ambas sedes y un TV encendido con la pantalla abierta.</li>
+<li>El sistema depende de que el plan de Railway esté activo (ver 7.1).</li>
+<li>Se asume que el kiosco usa siempre el mismo celular, porque el stock queda guardado en ese dispositivo.</li>
+<li>Las ventas semanales iniciales de cada producto las informó el cliente y se ajustan desde la app.</li>
+</ul>
+
+<h3 id="s4-6">4.6. Evolución previsible del sistema</h3>
+<ul>
+<li><strong>v2 · Stock en la nube</strong> <span class="mod k">Kiosco</span> para compartirlo entre celulares y entre sedes, con login.</li>
+<li><strong>v2 · Aviso de superposición</strong> <span class="mod t">Turnero</span> al cargar dos turnos en la misma cancha y horario.</li>
+<li><strong>v2 · Cambio de contraseña y gestión de usuarios</strong> desde el panel.</li>
+<li><strong>v2 · Turnos fijos semanales</strong> para equipos que juegan siempre el mismo día.</li>
+<li><strong>v3 · Registro de ventas y precios</strong> en el kiosco, con reporte mensual.</li>
+<li><strong>v3 · Reservas online</strong> por parte de los jugadores.</li>
+<li><strong>v3 · Panel unificado</strong> que reúna turnero y kiosco.</li>
+</ul>
+
+<!-- ================= 5 ================= -->
+<h2 id="s5">5. Requisitos Específicos</h2>
+<h3 id="s5-1">5.1. Requerimientos funcionales <span class="utn">Buenas Prácticas UTN p.59/60</span></h3>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Requerimiento</th><th>Prioridad</th><th>Origen</th></tr></thead>
+<tbody>
+<tr><td>RF01 <span class="mod t">T</span></td><td><strong>Pantalla de turnos del día</strong><br>Ambas sedes, reloj, fecha, leyenda, carrusel de promociones y texto corrido.</td><td>Alta</td><td>“Los jugadores preguntan siempre a qué hora juegan”</td></tr>
+<tr><td>RF02 <span class="mod t">T</span></td><td><strong>Colores por estado</strong><br>Rojo reservado, verde disponible, dorado en juego (calculado con el reloj).</td><td>Alta</td><td>Pantalla legible a distancia</td></tr>
+<tr><td>RF03 <span class="mod t">T</span></td><td><strong>Actualización automática</strong><br>La pantalla recarga los turnos cada 2 minutos.</td><td>Alta</td><td>Recepción no puede tocar el TV</td></tr>
+<tr><td>RF04 <span class="mod t">T</span></td><td><strong>Login con dos roles</strong><br>Admin y recepción.</td><td>Alta</td><td>Solo personal autorizado carga turnos</td></tr>
+<tr><td>RF05 <span class="mod t">T</span></td><td><strong>Alta, edición y baja de turnos</strong> por día y por sede.</td><td>Alta</td><td>Reemplazo de la planilla</td></tr>
+<tr><td>RF06 <span class="mod t">T</span></td><td><strong>Turnos libres</strong><br>Horarios ofrecidos como disponibles, sin cliente.</td><td>Media</td><td>Mostrar qué se puede reservar</td></tr>
+<tr><td>RF07 <span class="mod t">T</span></td><td><strong>Horarios en horas en punto</strong><br>13 a 14, 15 a 16; “Hasta” siempre posterior a “Desde”.</td><td>Alta</td><td>Pedido del cliente (v1.3)</td></tr>
+<tr><td>RF08 <span class="mod t">T</span></td><td><strong>Tipo de cancha en La Cautiva</strong><br>Fútbol 5, 7 u 11, obligatorio solo en esa sede.</td><td>Alta</td><td>Pedido del cliente (v1.3)</td></tr>
+<tr><td>RF09 <span class="mod t">T</span></td><td><strong>Formulario en una columna</strong>.</td><td>Media</td><td>Pedido del cliente (v1.3)</td></tr>
+<tr><td>RF10 <span class="mod k">K</span></td><td><strong>Stock por producto</strong><br>Botones + y −, y cantidad exacta tocando el número.</td><td>Alta</td><td>“No sabemos cuánto nos queda”</td></tr>
+<tr><td>RF11 <span class="mod k">K</span></td><td><strong>Búsqueda y filtro por categoría</strong><br>Bebidas, Snacks y golosinas, Cerveza, Helados.</td><td>Media</td><td>29 productos en una lista</td></tr>
+<tr><td>RF12 <span class="mod k">K</span></td><td><strong>Alerta de reposición</strong><br>Cuando el stock llega al doble de la venta semanal o menos.</td><td>Alta</td><td>Productos que se agotan sin aviso</td></tr>
+<tr><td>RF13 <span class="mod k">K</span></td><td><strong>Sugerencias de compra</strong><br>Packs necesarios para cubrir tres fines de semana.</td><td>Alta</td><td>Compras por intuición</td></tr>
+<tr><td>RF14 <span class="mod k">K</span></td><td><strong>Marcar sugerencias</strong><br>Pendiente, anotada, o comprada (suma al stock).</td><td>Media</td><td>Seguimiento de la compra</td></tr>
+<tr><td>RF15 <span class="mod k">K</span></td><td><strong>Venta semanal editable</strong> por producto.</td><td>Media</td><td>La demanda cambia por temporada</td></tr>
+<tr><td>RF16 <span class="mod k">K</span></td><td><strong>Reiniciar stock a 0</strong> con confirmación.</td><td>Baja</td><td>Recuento completo</td></tr>
+</tbody></table></div>
+
+<h4>Requerimientos no funcionales (RNF)</h4>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Requerimiento</th><th>Categoría</th></tr></thead>
+<tbody>
+<tr><td>RNF01</td><td><strong>Un turno cargado aparece en el TV en menos de 2 minutos.</strong></td><td>Rendimiento</td></tr>
+<tr><td>RNF02</td><td><strong>Se usan desde el navegador</strong> en PC, celular o TV, sin instalar nada.</td><td>Usabilidad</td></tr>
+<tr><td>RNF03</td><td><strong>El kiosco se maneja con una mano</strong>: botones de al menos 44 px y barra de sugerencias fija abajo.</td><td>Usabilidad / HCI</td></tr>
+<tr><td>RNF04</td><td><strong>Sin jerga técnica</strong>: estados con palabras y colores.</td><td>Usabilidad / HCI</td></tr>
+<tr><td>RNF05</td><td><strong>Contraseñas con hash y consultas preparadas.</strong></td><td>Seguridad</td></tr>
+<tr><td>RNF06</td><td><strong>Configuración por variables de entorno</strong> y migración automática de la base.</td><td>Mantenimiento</td></tr>
+<tr><td>RNF07</td><td><strong>Publicación continua</strong>: cada cambio en GitHub se despliega solo en Railway.</td><td>Mantenimiento</td></tr>
+</tbody></table></div>
+
+<h4>Limitaciones del alcance</h4>
+<p>Definen qué <strong>no</strong> hace el sistema en esta entrega. No son debilidades: son un contrato de honestidad con el cliente. Cada una puede convertirse en una versión futura (4.6).</p>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Qué NO hace en esta entrega</th><th>Por qué</th><th>¿Versión futura?</th></tr></thead>
+<tbody>
+<tr><td>LIM01 <span class="mod k">K</span></td><td><strong>El stock no se comparte entre dispositivos.</strong> Cada celular tiene su propio stock.</td><td>Los datos se guardan en el navegador, sin servidor.</td><td>Sí. v2 con base en la nube.</td></tr>
+<tr><td>LIM02 <span class="mod k">K</span></td><td><strong>Si se borran los datos del navegador, se pierde el stock.</strong></td><td>Misma causa que LIM01.</td><td>Sí. v2.</td></tr>
+<tr><td>LIM03 <span class="mod k">K</span></td><td><strong>No registra ventas, precios ni ganancias.</strong></td><td>El pedido fue controlar cantidades.</td><td>Sí. v3.</td></tr>
+<tr><td>LIM04 <span class="mod k">K</span></td><td><strong>Los productos se agregan en el código</strong>, no desde la app.</td><td>El catálogo cambia poco.</td><td>Sí.</td></tr>
+<tr><td>LIM05 <span class="mod t">T</span></td><td><strong>No avisa superposiciones</strong> de turnos en la misma cancha.</td><td>La validación actual controla solo el horario.</td><td>Sí. v2.</td></tr>
+<tr><td>LIM06 <span class="mod t">T</span></td><td><strong>No permite cambiar la contraseña</strong> desde el panel.</td><td>Los usuarios se crean con el instalador.</td><td>Sí. v2.</td></tr>
+<tr><td>LIM07 <span class="mod t">T</span></td><td><strong>No toma reservas ni cobros</strong> de los jugadores.</td><td>Fuera del alcance pedido.</td><td>Sí. v3.</td></tr>
+<tr><td>LIM08 <span class="mod t">T</span></td><td><strong>Los turnos de la versión en Alwaysdata no se migraron.</strong></td><td>Se perdió el acceso a esa cuenta.</td><td>No aplica.</td></tr>
+</tbody></table></div>
+
+<h3 id="s5-2">5.2. Interfaces de usuario <span class="utn">Buenas Prácticas UTN p.58</span></h3>
+<p>Las interfaces se diseñaron por usabilidad, pensando en quién las usa y dónde. La <strong>pantalla del TV</strong> se lee a distancia: turnos grandes a la izquierda con colores por estado, carrusel de promociones a la derecha y texto corrido abajo. El <strong>panel de turnos</strong> se usa en la PC de recepción: selector de día, formulario en una columna y una tabla por sede. La <strong>app del kiosco</strong> se usa en el celular, parado y con una mano: cada producto tiene su emoji, botones grandes de + y −, alerta roja cuando hay que reponer y un botón fijo abajo con las sugerencias de compra.</p>
+<h4>5.2.1. Diseño de interfaz (Figma)</h4>
+<div class="note todo"><strong>Entregable del equipo</strong>Insertar las imágenes del mockup de Figma con el hipervínculo al prototipo dentro del texto explicativo.</div>
+
+<h3 id="s5-3">5.3. Interfaces de hardware <span class="utn">Buenas Prácticas UTN p.59</span></h3>
+<p>El proyecto no desarrolla hardware propio. Este apartado se adapta para listar el equipamiento que el complejo necesita para usar los sistemas.</p>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Requerimiento</th><th>Prioridad</th><th>Uso</th></tr></thead>
+<tbody>
+<tr><td>RHW01</td><td><strong>TV o monitor con navegador por sede</strong> (Smart TV, TV box o PC por HDMI).</td><td>Alta</td><td><span class="mod t">Turnero</span> Pantalla pública.</td></tr>
+<tr><td>RHW02</td><td><strong>PC o celular en recepción.</strong></td><td>Alta</td><td><span class="mod t">Turnero</span> Panel de turnos.</td></tr>
+<tr><td>RHW03</td><td><strong>Celular o tablet fijo del kiosco.</strong></td><td>Alta</td><td><span class="mod k">Kiosco</span> Control de stock (ver LIM01).</td></tr>
+<tr><td>RHW04</td><td><strong>Conexión a Internet en cada sede.</strong></td><td>Alta</td><td>Ambos módulos.</td></tr>
+</tbody></table></div>
+<p><strong>5.3.1. Visualización 3D del producto:</strong> no aplica, porque no hay un dispositivo físico a fabricar.</p>
+
+<h3 id="s5-4">5.4. Interfaces de software <span class="utn">Buenas Prácticas UTN p.59</span></h3>
+<div class="tw"><table>
+<thead><tr><th>ID</th><th>Componente</th><th>Tecnología / Stack</th><th>Rol en el sistema</th></tr></thead>
+<tbody>
+<tr><td>ISW01 <span class="mod t">T</span></td><td><strong>Pantalla del TV</strong><br><code>pantalla/index.html</code></td><td>HTML, CSS y JavaScript</td><td>Lee la API cada 2 minutos y dibuja los turnos.</td></tr>
+<tr><td>ISW02 <span class="mod t">T</span></td><td><strong>Panel de turnos</strong><br><code>admin/</code></td><td>PHP 8.2</td><td>Login, formulario y listado por sede.</td></tr>
+<tr><td>ISW03 <span class="mod t">T</span></td><td><strong>API REST</strong><br><code>api/</code></td><td>PHP 8.2, JSON</td><td>Lectura pública; escritura con sesión y rol.</td></tr>
+<tr><td>ISW04 <span class="mod t">T</span></td><td><strong>Base de datos</strong></td><td>MySQL en Railway</td><td>Sedes, turnos y usuarios. Modelo en 5.6.</td></tr>
+<tr><td>ISW05 <span class="mod t">T</span></td><td><strong>Contenedor</strong><br><code>Dockerfile</code></td><td>php:8.2-apache, pdo_mysql</td><td>Ejecuta el turnero en el puerto 8080.</td></tr>
+<tr><td>ISW06 <span class="mod k">K</span></td><td><strong>App de stock</strong><br><code>App.jsx</code></td><td>React 18, Vite 5, Tailwind (CDN), lucide-react</td><td>Toda la lógica de stock y sugerencias.</td></tr>
+<tr><td>ISW07 <span class="mod k">K</span></td><td><strong>Persistencia local</strong></td><td>localStorage, clave <code>kiosco:stock:v1</code></td><td>Guarda stock, ventas semanales y sugerencias anotadas.</td></tr>
+<tr><td>ISW08 <span class="mod k">K</span></td><td><strong>Servidor estático</strong></td><td>serve 14 (Node.js)</td><td>Publica la carpeta <code>dist</code> en Railway.</td></tr>
+</tbody></table></div>
+
+<h3 id="s5-5">5.5. Interfaces de comunicación <span class="utn">Buenas Prácticas UTN p.59</span></h3>
+<div class="tw"><table>
+<thead><tr><th>Interfaz</th><th>Protocolo / Formato</th><th>Detalle</th></tr></thead>
+<tbody>
+<tr><td><strong>Pantalla → API</strong> <span class="mod t">T</span></td><td>HTTPS / REST (JSON)</td><td><code>GET /api/turnos.php?fecha=hoy</code>. Público, sin login.</td></tr>
+<tr><td><strong>Panel → API</strong> <span class="mod t">T</span></td><td>HTTPS / formulario POST</td><td><code>POST /api/guardar.php</code> y <code>POST /api/eliminar.php</code>, con sesión de rol admin o recepción.</td></tr>
+<tr><td><strong>Backend → Base de datos</strong> <span class="mod t">T</span></td><td>TCP / SQL (MySQL)</td><td>PDO a <code>mysql.railway.internal:3306</code>, tomado de <code>MYSQL_URL</code>.</td></tr>
+<tr><td><strong>Celular → Railway</strong> <span class="mod k">K</span></td><td>HTTPS</td><td>Solo para descargar la app; después no se comunica con ningún servidor.</td></tr>
+</tbody></table></div>
+<p>Respuesta de ejemplo de la API de turnos:</p>
+<pre><code>{ "fecha": "2026-09-22",
+  "sedes": [ { "nombre": "Sede 2", "direccion": "La Cautiva 7654",
+      "turnos": [ { "inicio": "18:00", "fin": "19:00", "cancha": "Cancha 1",
+                    "tipo": "Fútbol 11", "cliente": "Torneo Interno",
+                    "estado": "reservado" } ] } ] }</code></pre>
+
+<h3 id="s5-6">5.6. Modelo Entidad-Relación de la base de datos</h3>
+<p>El turnero usa una base relacional MySQL con tres tablas. El kiosco no usa base de datos: guarda un documento JSON en el navegador, que se describe al final de este apartado.</p>
+
+<h4>Normalización</h4>
+<div class="tw"><table>
+<thead><tr><th>Forma</th><th>Qué exige</th><th>Cómo se cumple</th></tr></thead>
+<tbody>
+<tr><td><strong>1FN</strong></td><td>Valores atómicos, sin grupos repetidos.</td><td>Cada turno guarda una sola cancha, un solo horario y un solo cliente. La excepción consciente es <code>sedes.tipos_cancha</code>, una lista corta separada por comas (ver abajo).</td></tr>
+<tr><td><strong>2FN</strong></td><td>Sin dependencias parciales de la clave.</td><td>Todas las tablas usan clave primaria simple (<code>id</code>).</td></tr>
+<tr><td><strong>3FN</strong></td><td>Sin dependencias transitivas.</td><td>La dirección de la sede no se repite en cada turno: el turno referencia a la sede por <code>sede_id</code>.</td></tr>
+</tbody></table></div>
+<div class="note warn"><strong>Desnormalización consciente</strong><code>sedes.tipos_cancha</code> guarda “Fútbol 5,Fútbol 7,Fútbol 11” en una sola columna. Una tabla aparte sería lo normalizado, pero la lista es fija, pequeña y solo la usa una sede. Si en el futuro cada cancha tiene su tipo fijo, se crea la tabla <code>canchas</code> (ver 4.6).</div>
+
+<h4>Tablas de hechos y dimensiones</h4>
+<p><strong>TURNOS</strong> es la tabla de hechos: cada fila es algo que pasa (una reserva) con fecha y hora, y crece todo el tiempo. <strong>SEDES</strong> es una dimensión: describe dónde. <strong>USUARIOS</strong> es independiente: controla el acceso y no se relaciona con los turnos.</p>
+
+<figure>
+<svg viewBox="0 0 760 300" role="img" aria-label="Diagrama entidad-relación: sedes, turnos y usuarios" font-family="Barlow, sans-serif" font-size="14">
+  <rect x="10" y="10" width="220" height="30" fill="#16221b" rx="6"/><text x="120" y="31" fill="#fff" text-anchor="middle" font-weight="700" font-size="16">SEDES · DIM</text>
+  <rect x="10" y="40" width="220" height="140" fill="#fff" stroke="#16221b"/>
+  <text x="22" y="64">id <tspan fill="#d3342a" font-weight="700">PK</tspan></text><text x="22" y="88">nombre</text><text x="22" y="112">direccion</text><text x="22" y="136">orden</text><text x="22" y="160">tipos_cancha</text>
+  <rect x="320" y="10" width="220" height="30" fill="#16221b" rx="6"/><text x="430" y="31" fill="#fff" text-anchor="middle" font-weight="700" font-size="16">TURNOS · HECHO</text>
+  <rect x="320" y="40" width="220" height="236" fill="#fff" stroke="#16221b"/>
+  <text x="332" y="64">id <tspan fill="#d3342a" font-weight="700">PK</tspan></text><text x="332" y="88">sede_id <tspan fill="#b07a0a" font-weight="700">FK</tspan></text><text x="332" y="112">fecha</text><text x="332" y="136">hora_inicio</text><text x="332" y="160">hora_fin</text><text x="332" y="184">cancha</text><text x="332" y="208">tipo_cancha</text><text x="332" y="232">cliente</text><text x="332" y="256">estado</text>
+  <rect x="590" y="10" width="160" height="30" fill="#16221b" rx="6"/><text x="670" y="31" fill="#fff" text-anchor="middle" font-weight="700" font-size="16">USUARIOS</text>
+  <rect x="590" y="40" width="160" height="116" fill="#fff" stroke="#16221b"/>
+  <text x="602" y="64">id <tspan fill="#d3342a" font-weight="700">PK</tspan></text><text x="602" y="88">usuario</text><text x="602" y="112">clave_hash</text><text x="602" y="136">rol</text>
+  <path d="M230 64 H275 V84 H320" stroke="#16221b" stroke-width="2" fill="none"/>
+  <text x="238" y="58" font-weight="700">1</text><text x="304" y="78" font-weight="700">N</text><text x="275" y="104" text-anchor="middle" fill="#48584e" font-size="12">tiene</text>
+</svg>
+<figcaption>Figura 2. Diagrama entidad-relación del turnero. Cardinalidad 1 : N entre sedes y turnos.</figcaption>
+</figure>
+
+<h4>Relaciones</h4>
+<div class="tw"><table>
+<thead><tr><th>Entidad</th><th>Card.</th><th>Entidad</th><th>Significado</th></tr></thead>
+<tbody><tr><td>SEDES</td><td>1 : N</td><td>TURNOS</td><td>Una sede tiene muchos turnos; cada turno pertenece a una sede. Si se borra la sede, se borran sus turnos (<code>ON DELETE CASCADE</code>).</td></tr></tbody>
+</table></div>
+
+<h4>Esquema relacional (MySQL)</h4>
+<pre><code>CREATE TABLE sedes (
+  id           INT AUTO_INCREMENT PRIMARY KEY,
+  nombre       VARCHAR(60)  NOT NULL,          -- "Sede 1"
+  direccion    VARCHAR(160) NOT NULL,          -- "La Cautiva 7654"
+  orden        INT NOT NULL DEFAULT 0,         -- orden en pantalla
+  tipos_cancha VARCHAR(160) NULL               -- "Fútbol 5,Fútbol 7,Fútbol 11"
+);
+
+CREATE TABLE turnos (
+  id          INT AUTO_INCREMENT PRIMARY KEY,
+  sede_id     INT  NOT NULL,
+  fecha       DATE NOT NULL,
+  hora_inicio TIME NOT NULL,                   -- siempre en punto
+  hora_fin    TIME NOT NULL,                   -- puede ser 24:00
+  cancha      VARCHAR(40) NOT NULL DEFAULT 'Cancha 1',
+  tipo_cancha VARCHAR(30) NULL,                -- solo sedes con tipos
+  cliente     VARCHAR(80) NULL,                -- NULL si está libre
+  estado      ENUM('reservado','libre') NOT NULL DEFAULT 'reservado',
+  FOREIGN KEY (sede_id) REFERENCES sedes(id) ON DELETE CASCADE
+);
+
+CREATE TABLE usuarios (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  usuario    VARCHAR(40)  NOT NULL UNIQUE,
+  clave_hash VARCHAR(255) NOT NULL,            -- bcrypt
+  rol        ENUM('admin','recepcion') NOT NULL DEFAULT 'recepcion'
+);</code></pre>
+
+<h4>Modelo de datos del kiosco <span class="mod k">Kiosco</span></h4>
+<p>El catálogo de productos está fijo en el código (<code>SEED</code>) y en el navegador se guarda solo lo que cambia:</p>
+<div class="tw"><table>
+<thead><tr><th>Campo</th><th>Dónde vive</th><th>Descripción</th></tr></thead>
+<tbody>
+<tr><td>id, cat, name, emoji, pack</td><td>Código</td><td>Identificador, categoría, nombre, ícono y unidades por pack.</td></tr>
+<tr><td>weekly</td><td>Código (valor inicial) y navegador</td><td>Venta estimada por fin de semana. Editable.</td></tr>
+<tr><td>stock</td><td>Navegador</td><td>Unidades actuales. Nunca menor que 0.</td></tr>
+<tr><td>done</td><td>Navegador</td><td>Lista de sugerencias marcadas como anotadas.</td></tr>
+<tr><td>version</td><td>Navegador</td><td>Versión del catálogo (3) para migrar datos viejos.</td></tr>
+</tbody></table></div>
+<pre><code>// localStorage["kiosco:stock:v1"]
+{ "version": 3,
+  "products": [ { "id": "agua500", "stock": 14, "weekly": 20 }, ... ],
+  "done": ["alfa"] }</code></pre>
+<p><strong>Reglas de cálculo:</strong> punto de reposición = <code>weekly × 2</code>; hay que reponer si <code>stock ≤ weekly × 2</code> y <code>weekly &gt; 0</code>; packs sugeridos = <code>⌈(weekly × 3 − stock) ÷ pack⌉</code>, con un mínimo de 1. Los helados empiezan con venta semanal 0, así que no generan sugerencias hasta que se les carga una.</p>
+
+<h3 id="s5-7">5.7. Diagrama de flujo del sistema</h3>
+<p>Mientras el modelo entidad-relación describe <strong>qué guarda</strong> el sistema, el diagrama de flujo describe <strong>qué hace</strong>, con carriles por responsable.</p>
+<figure>
+<svg viewBox="0 0 760 470" role="img" aria-label="Diagrama de flujo de la carga de un turno" font-family="Barlow, sans-serif" font-size="14">
+  <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16221b"/></marker></defs>
+  <text x="120" y="22" text-anchor="middle" font-weight="700" fill="#2d7a4b">RECEPCIÓN · PANEL</text>
+  <text x="380" y="22" text-anchor="middle" font-weight="700" fill="#b07a0a">SERVIDOR · RAILWAY</text>
+  <text x="640" y="22" text-anchor="middle" font-weight="700" fill="#d3342a">PANTALLA · TV</text>
+  <line x1="250" y1="34" x2="250" y2="460" stroke="#dbe3dc" stroke-width="2"/><line x1="510" y1="34" x2="510" y2="460" stroke="#dbe3dc" stroke-width="2"/>
+  <rect x="40" y="46" width="160" height="40" rx="20" fill="#16221b"/><text x="120" y="71" fill="#fff" text-anchor="middle">Inicia sesión</text>
+  <rect x="30" y="112" width="180" height="56" rx="6" fill="#fff" stroke="#16221b"/><text x="120" y="136" text-anchor="middle">Elige día, sede, horario,</text><text x="120" y="154" text-anchor="middle">cancha y estado</text>
+  <polygon points="120,190 210,230 120,270 30,230" fill="#fff" stroke="#16221b"/><text x="120" y="226" text-anchor="middle">¿Sede con</text><text x="120" y="242" text-anchor="middle">tipos?</text>
+  <rect x="40" y="300" width="160" height="40" rx="6" fill="#fff" stroke="#16221b"/><text x="120" y="325" text-anchor="middle">Elige Fútbol 5, 7 u 11</text>
+  <rect x="40" y="370" width="160" height="40" rx="6" fill="#fff" stroke="#16221b"/><text x="120" y="395" text-anchor="middle">Guardar turno</text>
+  <polygon points="380,350 470,390 380,430 290,390" fill="#fff" stroke="#16221b"/><text x="380" y="386" text-anchor="middle">¿Datos</text><text x="380" y="402" text-anchor="middle">válidos?</text>
+  <rect x="300" y="250" width="160" height="56" rx="6" fill="#fff" stroke="#16221b"/><text x="380" y="274" text-anchor="middle">Guarda en MySQL</text><text x="380" y="292" text-anchor="middle">(guardar.php)</text>
+  <rect x="300" y="130" width="160" height="56" rx="6" fill="#fff" stroke="#16221b"/><text x="380" y="154" text-anchor="middle">Entrega el JSON</text><text x="380" y="172" text-anchor="middle">(turnos.php)</text>
+  <rect x="560" y="46" width="160" height="56" rx="6" fill="#fff" stroke="#16221b"/><text x="640" y="70" text-anchor="middle">Pide los turnos</text><text x="640" y="88" text-anchor="middle">cada 2 minutos</text>
+  <rect x="560" y="200" width="160" height="56" rx="6" fill="#fff" stroke="#16221b"/><text x="640" y="224" text-anchor="middle">Pinta por estado y</text><text x="640" y="242" text-anchor="middle">marca “En juego”</text>
+  <rect x="560" y="300" width="160" height="40" rx="20" fill="#16221b"/><text x="640" y="325" fill="#fff" text-anchor="middle">Turno visible</text>
+  <path d="M120 86 V108" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/>
+  <path d="M120 168 V186" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/>
+  <path d="M120 270 V296" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/><text x="130" y="288">Sí</text>
+  <path d="M30 230 H14 V390 H36" stroke="#16221b" stroke-width="2" fill="none" marker-end="url(#f)"/><text x="18" y="222">No</text>
+  <path d="M120 340 V366" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/>
+  <path d="M200 390 H286" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/>
+  <path d="M380 350 V310" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/><text x="388" y="336">Sí</text>
+  <path d="M380 430 V452 H120 V414" stroke="#d3342a" stroke-width="2" fill="none" marker-end="url(#f)"/><text x="260" y="446" fill="#d3342a">No: muestra el error</text>
+  <path d="M380 250 V190" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/>
+  <path d="M556 74 H440 V126" stroke="#16221b" stroke-width="2" fill="none" marker-end="url(#f)"/>
+  <path d="M460 158 H600 V196" stroke="#16221b" stroke-width="2" fill="none" marker-end="url(#f)"/>
+  <path d="M640 256 V296" stroke="#16221b" stroke-width="2" marker-end="url(#f)"/>
+</svg>
+<figcaption>Figura 3. Turnero: desde la carga de un turno hasta que aparece en el TV.</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 760 420" role="img" aria-label="Diagrama de flujo del control de stock" font-family="Barlow, sans-serif" font-size="14">
+  <defs><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#16221b"/></marker></defs>
+  <text x="190" y="22" text-anchor="middle" font-weight="700" fill="#2d7a4b">ENCARGADO DEL KIOSCO</text>
+  <text x="570" y="22" text-anchor="middle" font-weight="700" fill="#b07a0a">APP EN EL CELULAR</text>
+  <line x1="380" y1="34" x2="380" y2="410" stroke="#dbe3dc" stroke-width="2"/>
+  <rect x="110" y="44" width="160" height="40" rx="20" fill="#16221b"/><text x="190" y="69" fill="#fff" text-anchor="middle">Vende un producto</text>
+  <rect x="110" y="110" width="160" height="40" rx="6" fill="#fff" stroke="#16221b"/><text x="190" y="135" text-anchor="middle">Toca “−” en el producto</text>
+  <rect x="490" y="110" width="160" height="40" rx="6" fill="#fff" stroke="#16221b"/><text x="570" y="135" text-anchor="middle">Resta 1 y lo guarda</text>
+  <polygon points="570,175 670,215 570,255 470,215" fill="#fff" stroke="#16221b"/><text x="570" y="211" text-anchor="middle">¿stock ≤ 2 ×</text><text x="570" y="227" text-anchor="middle">venta semanal?</text>
+  <rect x="490" y="285" width="160" height="56" rx="6" fill="#fbe7e5" stroke="#d3342a"/><text x="570" y="309" text-anchor="middle">Alerta roja y suma</text><text x="570" y="327" text-anchor="middle">a Sugerencias</text>
+  <rect x="95" y="285" width="190" height="56" rx="6" fill="#fff" stroke="#16221b"/><text x="190" y="309" text-anchor="middle">Abre Sugerencias y ve</text><text x="190" y="327" text-anchor="middle">cuántos packs comprar</text>
+  <rect x="110" y="365" width="160" height="40" rx="6" fill="#fff" stroke="#16221b"/><text x="190" y="390" text-anchor="middle">Compra y toca “A”</text>
+  <rect x="490" y="365" width="160" height="40" rx="20" fill="#16221b"/><text x="570" y="390" fill="#fff" text-anchor="middle">Suma al stock</text>
+  <path d="M190 84 V106" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/>
+  <path d="M270 130 H486" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/>
+  <path d="M570 150 V171" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/>
+  <path d="M570 255 V281" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/><text x="580" y="274">Sí</text>
+  <path d="M670 215 H700 V64 H274" stroke="#16221b" stroke-width="2" fill="none" marker-end="url(#g)"/><text x="680" y="206">No</text>
+  <path d="M486 313 H289" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/>
+  <path d="M190 341 V361" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/>
+  <path d="M270 385 H486" stroke="#16221b" stroke-width="2" marker-end="url(#g)"/>
+</svg>
+<figcaption>Figura 4. Kiosco: desde una venta hasta la reposición del producto.</figcaption>
+</figure>
+<div class="note"><strong>Qué decide el sistema y qué decide la persona</strong>El turnero decide solo qué turno está “En juego”; qué se carga lo decide recepción. El kiosco calcula cuándo reponer y cuánto comprar, pero la compra la hace y la confirma el encargado.</div>
+
+<!-- ================= 6 ================= -->
+<h2 id="s6">6. Oferta de Gestión</h2>
+<h3>6.1. GANTT</h3>
+<div class="tw"><table>
+<thead><tr><th>Etapa</th><th>Tareas principales</th><th>Entregable</th></tr></thead>
+<tbody>
+<tr><td>E01</td><td>Entrevista con Turin Sport. Relevamiento de las dos sedes, las canchas y el kiosco.</td><td>Definición del problema y línea de base.</td></tr>
+<tr><td>E02</td><td>Factibilidad técnica, económica y de gestión. Elección de tecnologías y hosting.</td><td>Estudio de factibilidad.</td></tr>
+<tr><td>E03</td><td>RF, RNF, arquitectura y modelo de datos.</td><td>Especificación + ER.</td></tr>
+<tr><td>E04</td><td>Mockups y validación con el cliente.</td><td>Mockup validado.</td></tr>
+<tr><td>E05</td><td>Desarrollo del turnero y del kiosco, publicación, migración a Railway y documentación.</td><td>Sistemas online + documentación.</td></tr>
+<tr><td>E06</td><td>Presentación profesional, defensa y pitch.</td><td>Presentación + landing.</td></tr>
+</tbody></table></div>
+<div class="note todo"><strong>Entregable del equipo</strong>Agregar el link o el embed de la planilla de GANTT del equipo, con fechas y responsables reales.</div>
+
+<h3>6.2. Infraestructura administrativa <span class="utn">Buenas Prácticas UTN p.62</span></h3>
+<div class="tw"><table>
+<thead><tr><th>Grupo</th><th>Rol</th><th>Función</th></tr></thead>
+<tbody>
+<tr><td><strong>Dirección y Gestión</strong></td><td>Director / PM</td><td>Coordinación, recursos y relación con el cliente.</td></tr>
+<tr><td></td><td>Líder de proyecto</td><td>Asignación de tareas; planificación temporal y económica.</td></tr>
+<tr><td><strong>Desarrollo</strong></td><td>Backend / BD</td><td>PHP, API, MySQL.</td></tr>
+<tr><td></td><td>Frontend / UX-UI</td><td>Pantalla del TV, panel y app del kiosco.</td></tr>
+<tr><td></td><td>Infraestructura</td><td>GitHub, Docker y Railway.</td></tr>
+</tbody></table></div>
+<h4>El equipo</h4>
+<div class="team">
+  <div class="member"><span class="m-photo"></span><b>Nombre y Apellido</b><span>Director / PM</span></div>
+  <div class="member"><span class="m-photo"></span><b>Nombre y Apellido</b><span>Líder de proyecto</span></div>
+  <div class="member"><span class="m-photo"></span><b>Nombre y Apellido</b><span>Backend / BD</span></div>
+  <div class="member"><span class="m-photo"></span><b>Nombre y Apellido</b><span>Frontend / UX-UI</span></div>
+  <div class="member"><span class="m-photo"></span><b>Nombre y Apellido</b><span>Infraestructura</span></div>
+</div>
+<div class="note todo"><strong>Entregable del equipo</strong>Completar nombre y apellido y reemplazar cada <code>&lt;span class="m-photo"&gt;&lt;/span&gt;</code> por <code>&lt;img class="m-photo" src="img/integrante-01.jpg" alt="Foto de Nombre Apellido"&gt;</code>. Eliminar las tarjetas sobrantes.</div>
+<div class="cards">
+  <div><b>Gestión de tareas</b><p>Planilla de cálculo: GANTT, tareas y costos.</p></div>
+  <div><b>Documentación</b><p>Este sitio en GitHub Pages; README en cada repositorio.</p></div>
+  <div><b>Comunicación</b><p>Grupo de mensajería del equipo y reuniones con el cliente.</p></div>
+  <div><b>Repositorio</b><p>GitHub, con despliegue automático en Railway.</p></div>
+  <div><b>Diseño</b><p>Figma para las interfaces.</p></div>
+</div>
+
+<!-- ================= 7 ================= -->
+<h2 id="s7">7. Oferta Económica</h2>
+<h3>7.1. Proveedores de conectividad y hosting</h3>
+<div class="tw"><table>
+<thead><tr><th>Ítem</th><th>Opción</th><th>Costo</th></tr></thead>
+<tbody>
+<tr><td>Hosting de ambos sistemas (24/7)</td><td>Railway, plan Hobby. Incluye US$5 de uso por mes; el período de prueba dura 30 días o US$5.</td><td>US$5 / mes</td></tr>
+<tr><td>Base de datos MySQL</td><td>Servicio MySQL de Railway, dentro del mismo plan.</td><td>Incluido en el uso</td></tr>
+<tr><td>Dominio propio (opcional)</td><td>Hoy se usa el subdominio gratuito de Railway.</td><td>A cotizar</td></tr>
+<tr><td>Documentación y landing</td><td>GitHub Pages.</td><td>Sin costo</td></tr>
+</tbody></table></div>
+<h3>7.2. Proveedores de insumos electrónicos</h3>
+<div class="tw"><table>
+<thead><tr><th>Componente</th><th>Cant.</th><th>Costo unit.</th><th>Subtotal</th></tr></thead>
+<tbody>
+<tr><td>TV box o Smart TV (si la sede no tiene)</td><td>1 por sede</td><td>A cotizar</td><td>Pendiente</td></tr>
+<tr><td>Celular o tablet para el kiosco</td><td>1 por kiosco</td><td>A cotizar</td><td>Pendiente</td></tr>
+</tbody></table></div>
+<h3>7.3. Proveedores de insumos varios</h3>
+<div class="tw"><table>
+<thead><tr><th>Ítem</th><th>Detalle</th><th>Costo</th></tr></thead>
+<tbody><tr><td>Soporte de pared para el TV</td><td>Si hace falta instalarlo en la sede.</td><td>A cotizar</td></tr></tbody>
+</table></div>
+<div class="note warn"><strong>Precios</strong>Los precios de Railway pueden cambiar: confirmarlos en railway.com/pricing al armar el presupuesto.</div>
+
+<!-- ================= 8 ================= -->
+<h2 id="s8">8. Estimación Económica</h2>
+<div class="tw"><table>
+<thead><tr><th>Rubro</th><th>Detalle</th><th>Monto</th></tr></thead>
+<tbody>
+<tr><td><strong>Hosting</strong></td><td>Railway Hobby, 12 meses (7.1).</td><td>US$60 / año</td></tr>
+<tr><td><strong>Equipamiento</strong></td><td>TV box y celular, si el cliente no los tiene (7.2).</td><td>A completar</td></tr>
+<tr><td><strong>Insumos varios</strong></td><td>Soporte de TV (7.3).</td><td>A completar</td></tr>
+<tr><td><strong>Horas hombre</strong></td><td>Desarrollo, diseño, despliegue y documentación, por categoría y costo/hora.</td><td>A completar</td></tr>
+<tr><td><strong>Total estimado</strong></td><td>Suma de los rubros anteriores.</td><td>A completar</td></tr>
+</tbody></table></div>
+<div class="note todo"><strong>Entregable del equipo</strong>Insertar la imagen de la planilla de estimación con el hipervínculo de Google Sheets y los montos reales.</div>
+
+<!-- ================= 9 ================= -->
+<h2 id="s9">9. Contrato</h2>
+<p>Documento que explicita el acuerdo entre el equipo y Turin Sport. Se firma en la reunión de validación, habiendo leído las limitaciones (5.1).</p>
+<div class="cards">
+  <div><b>9.1. Objetivo del proyecto</b><p>Desarrollar y publicar el turnero de canchas de las dos sedes y el control de stock del kiosco, para ordenar los turnos y evitar que se agoten productos sin aviso.</p></div>
+  <div><b>9.2. Partes involucradas</b><p>Equipo desarrollador (3.3) y Turin Sport, representado por su responsable.</p></div>
+  <div><b>9.3. Alcance</b><p>Lo definido en 3.2 y 5. Queda fuera lo listado en LIM01 a LIM08.</p></div>
+  <div><b>9.4. Plazos</b><p>Según el GANTT (6.1). A completar con las fechas reales.</p></div>
+  <div><b>9.5. Responsabilidades</b><p>Equipo: desarrollo, publicación y documentación. Cliente: validar, proveer TV, celular e Internet, y mantener activo el plan de Railway.</p></div>
+  <div><b>9.6. Criterios de aceptación</b><p>Turnos visibles en el TV en menos de 2 minutos; tipo de cancha en La Cautiva; alerta y sugerencia de compra funcionando en el celular del kiosco.</p></div>
+  <div><b>9.7. Condiciones de modificación</b><p>Todo cambio se registra en el Control de Cambios (1) y se evalúa su impacto en plazos y costos antes de aceptarse.</p></div>
+  <div><b>9.8. Firmas</b><p>Equipo desarrollador y Turin Sport (simbólica, en la validación).</p></div>
+</div>
+
+<!-- ================= 10 ================= -->
+<h2 id="s10">10. Bitácora del Proyecto</h2>
+<p>Registra el proceso: entrevistas, reuniones, cambios de diseño y avances técnicos.</p>
+<h3 id="s10-1">10.1. Registro de Entrevistas</h3>
+<div class="tw"><table>
+<thead><tr><th>Fecha</th><th>Con quién</th><th>Objetivo</th><th>Modalidad</th></tr></thead>
+<tbody>
+<tr><td>A completar</td><td><strong>Responsable de Turin Sport</strong></td><td><strong>Entrevista 1.</strong> Cómo se manejan hoy los turnos de las dos sedes.</td><td>Presencial</td></tr>
+<tr><td>A completar</td><td><strong>Encargado del kiosco</strong></td><td><strong>Entrevista 2.</strong> Productos, ventas del fin de semana y forma de comprar.</td><td>Presencial</td></tr>
+<tr><td>A completar</td><td><strong>Responsable de Turin Sport</strong></td><td><strong>Validación.</strong> Pedidos de cambio: horas en punto, formulario en una columna y tipos de cancha.</td><td>A completar</td></tr>
+</tbody></table></div>
+
+<h3 id="s10-2">10.2. Minutas de Reunión</h3>
+<h4>Minuta 01 · Pedidos de cambio del cliente</h4>
+<div class="tw"><table><tbody>
+<tr><td><strong>Fecha y duración</strong></td><td>A completar.</td></tr>
+<tr><td><strong>Participantes</strong></td><td>Turin Sport y el equipo de proyecto.</td></tr>
+<tr><td><strong>Objetivo</strong></td><td>Revisar el panel de turnos en uso.</td></tr>
+<tr><td><strong>Temas tratados</strong></td><td>Comodidad del formulario, forma de cargar horarios y canchas de La Cautiva.</td></tr>
+<tr><td><strong>Decisiones y acuerdos</strong></td><td>Desde y Hasta uno abajo del otro; turnos solo en horas en punto; tipo de cancha Fútbol 5, 7 y 11 solo en La Cautiva.</td></tr>
+<tr><td><strong>Próximos pasos</strong></td><td>Implementar los cambios (v1.3) y publicarlos en Railway.</td></tr>
+</tbody></table></div>
+<div class="note todo"><strong>A completar por el equipo</strong>Sumar una minuta por cada reunión con los mismos seis campos.</div>
+
+<h3 id="s10-3">10.3. Registro de Cambios del Mockup</h3>
+<div class="tw"><table>
+<thead><tr><th>Componente</th><th>Qué se modificó</th><th>Por qué</th></tr></thead>
+<tbody>
+<tr><td><strong>Formulario de turno</strong></td><td>Pasó de dos columnas a una sola.</td><td>Desde y Hasta quedaban separados y la carga era incómoda (RF09).</td></tr>
+<tr><td><strong>Campos de horario</strong></td><td>De campo de hora con minutos a lista de horas en punto.</td><td>Las canchas se alquilan por hora completa (RF07).</td></tr>
+<tr><td><strong>Tipo de cancha</strong></td><td>Campo nuevo que aparece solo en La Cautiva.</td><td>Esa sede tiene canchas de 5, 7 y 11 (RF08).</td></tr>
+</tbody></table></div>
+
+<h3 id="s10-4">10.4. Bitácora de Avances Técnicos</h3>
+<div class="tw"><table>
+<thead><tr><th>Etapa</th><th>Hitos registrados</th><th>Fecha de cierre</th></tr></thead>
+<tbody>
+<tr><td>E05</td><td>Turnero v1.0 online en Alwaysdata.</td><td>A completar</td></tr>
+<tr><td>E05</td><td>Control de stock del kiosco (React + Vite) publicado en Railway.</td><td>10/09/2026</td></tr>
+<tr><td>E05</td><td>Pérdida de la cuenta de Alwaysdata; el código se conserva en GitHub. Dockerización y migración a Railway.</td><td>A completar</td></tr>
+<tr><td>E05</td><td>Cambios del cliente en el panel (v1.3).</td><td>22/09/2026</td></tr>
+<tr><td>E05</td><td>Nuevo repositorio <code>canchasgod</code>, servicio MySQL, variable <code>MYSQL_URL</code> e instalación.</td><td>22/09/2026</td></tr>
+<tr><td>E05</td><td>Documentación, manual, FAQ y landing en GitHub Pages.</td><td>22/09/2026</td></tr>
+<tr><td>E06</td><td>Presentación final.</td><td>A completar</td></tr>
+</tbody></table></div>
+
+<!-- ================= 11 ================= -->
+<h2 id="s11">11. Guía de Inicio Rápido</h2>
+<p>Las operaciones del uso diario, sin jerga técnica. El paso a paso completo, con los mensajes de error, está en el <a href="manual.html">Manual de usuario</a>.</p>
+<div class="note"><strong>Antes de empezar</strong>Hace falta un navegador actualizado, Internet, el usuario del panel entregado por el equipo y, en cada sede, un TV con la pantalla abierta. No se instala ninguna aplicación.</div>
+<ol class="steps">
+<li><h4>Entrar al panel de turnos</h4><span class="who">Admin y recepción</span><p>Abrir <a href="https://canchasgod-production.up.railway.app/admin/">el panel</a> e ingresar usuario y contraseña.</p></li>
+<li><h4>Cargar un turno</h4><span class="who">Admin y recepción</span><p>Elegir sede, hora de inicio (la de fin se completa sola), cancha, estado y quién reservó. En La Cautiva, también el tipo de cancha. Tocar “Guardar turno”.</p></li>
+<li><h4>Editar o borrar</h4><span class="who">Admin y recepción</span><p>En la tabla de la sede, tocar “Editar” o “Borrar” en la fila del turno.</p></li>
+<li><h4>Dejar la pantalla en el TV</h4><span class="who">Admin</span><p>Abrir <a href="https://canchasgod-production.up.railway.app/pantalla/">la pantalla</a> en el navegador del TV y ponerla en pantalla completa. Se actualiza sola.</p></li>
+<li><h4>Descontar una venta en el kiosco</h4><span class="who">Encargado del kiosco</span><p>Abrir <a href="https://control-de-stock-proyecto-production.up.railway.app/">el control de stock</a> y tocar “−” en el producto vendido.</p></li>
+<li><h4>Reponer</h4><span class="who">Encargado del kiosco</span><p>Tocar “Sugerencias de compras”, ver cuántos packs comprar y, al comprarlos, tocar “A” para sumarlos al stock.</p></li>
+</ol>
+
+<!-- ================= 12 ================= -->
+<h2 id="s12">12. Preguntas Frecuentes</h2>
+<p>Las preguntas que más se repiten. La lista completa, por tema, está en <a href="faq.html">Preguntas frecuentes</a>.</p>
+<details><summary>¿Puedo cargar un turno de 13:30 a 14:30?</summary><div>No. Los turnos van en horas en punto porque así se alquilan las canchas (RF07).</div></details>
+<details><summary>¿Por qué el tipo de cancha aparece solo en La Cautiva?</summary><div>Porque es la única sede con canchas de Fútbol 5, 7 y 11 (RF08).</div></details>
+<details><summary>Cargué un turno y no aparece en el TV</summary><div>La pantalla se actualiza cada 2 minutos y muestra solo los turnos de hoy (RF03).</div></details>
+<details><summary>¿El stock del kiosco se ve desde otro celular?</summary><div>No. Queda guardado en el celular donde se carga (LIM01). Usen siempre el mismo dispositivo.</div></details>
+<details><summary>¿Cómo decide la app cuándo reponer?</summary><div>Cuando el stock llega al doble de lo que se vende en un fin de semana, o menos (RF12). Sugiere comprar lo necesario para cubrir tres fines de semana (RF13).</div></details>
+<details><summary>¿Hay que instalar algo?</summary><div>No. Los dos sistemas funcionan desde el navegador (RNF02).</div></details>
+<div class="note"><strong>Cómo se mantiene</strong>Cada pregunta nueva que surge en una reunión se suma acá y en la minuta correspondiente (10.2). Si cambia el alcance, se registra también en el Control de Cambios (1).</div>
+</main>
+</div>
+
+<footer class="foot"><strong>Turin Sport</strong> · Documentación del Proyecto · Turnero digital y control de stock<br>Evaluación de Proyectos · 7mo Informática 2026 · Instituto Leonardo Murialdo · Prof. Pedaci, Lourdes</footer>
+</body>
+</html>

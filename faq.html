@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<title>Preguntas frecuentes · Turin Sport</title>
+<meta name="description" content="Preguntas frecuentes sobre el turnero digital de Turin Sport.">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">TURIN SPORT</a>
+  <nav aria-label="Secciones">
+    <a href="index.html" data-p="index">Inicio</a>
+    <a href="documentacion.html" data-p="documentacion">Documentación</a>
+    <a href="manual.html" data-p="manual">Manual de usuario</a>
+    <a href="faq.html" data-p="faq" aria-current="page">Preguntas frecuentes</a>
+    <a href="https://canchasgod-production.up.railway.app/">Turnero</a>
+    <a href="https://control-de-stock-proyecto-production.up.railway.app/">Kiosco</a>
+  </nav>
+</header>
+
+<div class="doc">
+<nav class="toc" aria-label="Contenidos">
+  <b>Temas</b>
+  <a href="#uso">Uso del panel</a>
+  <a href="#pantalla">La pantalla del TV</a>
+  <a href="#cuenta">Usuarios y seguridad</a>
+  <a href="#kiosco">Kiosco y stock</a>
+  <a href="#tecnico">Funcionamiento y costos</a>
+  <b>Más ayuda</b>
+  <a href="manual.html">Manual de usuario</a>
+  <a href="documentacion.html">Documentación técnica</a>
+</nav>
+
+<main class="content">
+<h1>Preguntas frecuentes</h1>
+<p class="lead">Respuestas a las dudas que más aparecen sobre el turnero de canchas y el control de stock del kiosco.</p>
+
+<h3 class="faq-group" id="uso">Uso del panel</h3>
+<details><summary>¿Puedo cargar un turno de 13:30 a 14:30?</summary><div>No. Los turnos van siempre en horas en punto (13 a 14, 15 a 16), porque así se alquilan las canchas del complejo. Fue un pedido del cliente para evitar errores de carga.</div></details>
+<details><summary>¿Cómo cargo un turno de dos horas?</summary><div>Elegí la hora de inicio y después cambiá “Hasta” a mano. Por ejemplo, Desde 19:00 y Hasta 21:00.</div></details>
+<details><summary>¿Por qué en una sede aparece “Tipo de cancha” y en la otra no?</summary><div>Porque solo La Cautiva tiene canchas de distinto tamaño (Fútbol 5, 7 y 11). En San Leonardo Murialdo el campo no hace falta y no se muestra.</div></details>
+<details><summary>¿Puedo cargar turnos de días futuros?</summary><div>Sí. Cambiá la fecha arriba del formulario y cargá el turno. Va a aparecer en la pantalla el día que corresponde.</div></details>
+<details><summary>¿Qué pasa si cargo dos turnos en la misma cancha y horario?</summary><div>Por ahora el sistema lo permite y los dos se ven en la pantalla. Antes de guardar, revisá la tabla de la sede. El aviso de superposición está previsto para una próxima versión.</div></details>
+<details><summary>Borré un turno por error, ¿lo puedo recuperar?</summary><div>No. El borrado es definitivo, por eso el panel pide confirmación. Cargalo de nuevo con los mismos datos.</div></details>
+<details><summary>¿Para qué sirve cargar un turno como “Libre”?</summary><div>Para mostrar en la pantalla que ese horario está disponible. Se ve en verde y ayuda a que los jugadores sepan qué pueden reservar.</div></details>
+
+<h3 class="faq-group" id="pantalla">La pantalla del TV</h3>
+<details><summary>Cargué un turno y no aparece en el TV</summary><div>La pantalla se actualiza cada 2 minutos. Esperá un poco o recargá la página. Verificá también que el turno sea del día de hoy: la pantalla solo muestra los turnos del día actual.</div></details>
+<details><summary>¿Qué significa el color dorado?</summary><div>Es el turno reservado que se está jugando en este momento, según la hora del reloj. La pantalla lo calcula sola.</div></details>
+<details><summary>¿Qué TV necesito?</summary><div>Cualquiera que tenga un navegador web: un Smart TV, un TV box o una PC conectada por HDMI. Necesita Internet.</div></details>
+<details><summary>Se cortó Internet, ¿qué muestra la pantalla?</summary><div>Si no puede conectarse al servidor, muestra turnos de ejemplo para no quedar vacía, y vuelve a intentar sola cada 2 minutos. Cuando vuelve la conexión, muestra los turnos reales.</div></details>
+<details><summary>¿Se pueden cambiar las imágenes y promociones del carrusel?</summary><div>Sí, pero hoy se hace en el código (<code>pantalla/index.html</code>). Pedíselo al equipo de desarrollo.</div></details>
+
+<h3 class="faq-group" id="cuenta">Usuarios y seguridad</h3>
+<details><summary>¿Qué diferencia hay entre admin y recepción?</summary><div>Hoy los dos pueden cargar, editar y borrar turnos de ambas sedes. El rol admin queda reservado para funciones de administración que se sumen más adelante, como la gestión de usuarios.</div></details>
+<details><summary>¿Cómo cambio mi contraseña?</summary><div>Todavía no se puede desde el panel. Pedíselo al equipo de desarrollo; es una de las mejoras previstas.</div></details>
+<details><summary>¿Las contraseñas están seguras?</summary><div>Se guardan encriptadas, nunca en texto plano. Igual, cambiá las contraseñas iniciales y no compartas tu usuario.</div></details>
+<details><summary>¿Los jugadores pueden entrar al panel?</summary><div>No. El panel pide usuario y contraseña. El público solo ve la pantalla del TV.</div></details>
+
+<h3 class="faq-group" id="kiosco">Kiosco y stock</h3>
+<details><summary>¿Necesito usuario para el control de stock?</summary><div>No. Se abre directamente. Por eso conviene usarlo en un celular del kiosco que no esté al alcance del público.</div></details>
+<details><summary>¿Puedo ver el stock desde mi celular y el del kiosco a la vez?</summary><div>No. El stock se guarda en el navegador del dispositivo donde se carga, así que cada celular tiene el suyo. Usen siempre el mismo. Compartirlo entre dispositivos está previsto para una próxima versión.</div></details>
+<details><summary>¿Cada sede tiene su propio stock?</summary><div>Sí, siempre que cada kiosco use su propio celular: cada dispositivo lleva su stock por separado.</div></details>
+<details><summary>¿Cuándo me avisa que tengo que reponer?</summary><div>Cuando el stock llega al doble de lo que se vende en un fin de semana, o menos. Si un producto vende 6 por finde, avisa cuando quedan 12.</div></details>
+<details><summary>¿Cómo calcula cuántos packs comprar?</summary><div>Sugiere lo necesario para cubrir tres fines de semana, redondeado a packs completos y como mínimo uno.</div></details>
+<details><summary>¿Qué diferencia hay entre ✓ y A en las sugerencias?</summary><div>✓ marca que ya la anotaste para comprar, pero no cambia el stock. A significa que ya la compraste: suma los packs al stock y la sugerencia desaparece.</div></details>
+<details><summary>Los helados nunca me avisan, ¿por qué?</summary><div>Porque empiezan con venta semanal 0. Tocá “Sin venta semanal cargada” y escribí cuántos se venden por finde.</div></details>
+<details><summary>¿Puedo agregar un producto nuevo?</summary><div>Hoy se agrega en el código de la app. Pedíselo al equipo de desarrollo.</div></details>
+<details><summary>Se borró todo el stock, ¿qué pasó?</summary><div>Probablemente se borraron los datos de navegación del celular, o se usó otro navegador. El stock no se puede recuperar: hay que volver a cargarlo.</div></details>
+
+<h3 class="faq-group" id="tecnico">Funcionamiento y costos</h3>
+<details><summary>¿Hay que instalar algún programa?</summary><div>No. Todo funciona desde el navegador, en PC, celular o TV.</div></details>
+<details><summary>¿Dónde se guardan los datos?</summary><div>Los turnos, en una base MySQL en Railway, un servicio en la nube. El stock del kiosco, en el propio celular. El código de los dos sistemas está en GitHub.</div></details>
+<details><summary>¿Cuánto cuesta mantenerlo online?</summary><div>El hosting en Railway cuesta US$5 por mes en el plan Hobby. Cuando termina el período de prueba hay que activar ese plan para que el sitio no se apague. Conviene confirmar el precio en railway.com/pricing.</div></details>
+<details><summary>¿Qué pasó con los turnos de la versión anterior?</summary><div>La primera versión estaba en Alwaysdata y se perdió el acceso a esa cuenta. El código se recuperó desde GitHub, pero los turnos cargados allí no se pudieron migrar. Las sedes y los usuarios se volvieron a crear.</div></details>
+<details><summary>¿Se puede agregar otra sede o más canchas?</summary><div>Sí. Hoy se hace desde la base de datos; el equipo de desarrollo puede sumarlas sin cambiar el resto del sistema.</div></details>
+</main>
+</div>
+
+<footer class="foot">Turin Sport · Preguntas frecuentes · 7mo Informática 2026</footer>
+</body>
+</html>

@@ -2,13 +2,191 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<!-- La raíz lleva directo a la pantalla del TV -->
-<meta http-equiv="refresh" content="0; url=/pantalla/index.html">
-<title>Turin Sport</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<title>Turin Sport · Turnero de canchas y control de stock</title>
+<meta name="description" content="Turnero digital de Turin Sport: los turnos de las dos sedes se cargan desde un panel y aparecen solos en la pantalla del complejo.">
+<style>
+.hero{background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;opacity:.07;
+  background:
+   linear-gradient(90deg,transparent calc(50% - 1px),#fff calc(50% - 1px),#fff calc(50% + 1px),transparent calc(50% + 1px)),
+   radial-gradient(circle at 50% 50%,transparent 139px,#fff 140px,#fff 142px,transparent 143px);}
+.hero-in{position:relative;max-width:1180px;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1rem,4vw,2rem);
+  display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center}
+.hero h1{color:#fff;font-size:clamp(2.8rem,6.5vw,5rem);line-height:.95;text-transform:uppercase}
+.hero p{color:#c9d4cc;font-size:1.2rem;max-width:34ch;margin:1.2rem 0 1.8rem}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap}
+.btn{display:inline-block;font-family:var(--disp);font-weight:700;font-size:1.15rem;text-decoration:none;
+  padding:.7rem 1.3rem;border-radius:8px;background:var(--red);color:#fff;border:2px solid var(--red)}
+.btn:hover{background:#b82a21;color:#fff;border-color:#b82a21}
+.btn.alt{background:transparent;border-color:#56685c;color:#fff}
+.btn.alt:hover{border-color:#fff;color:#fff}
+
+/* El tablero: la pieza que se recuerda */
+.board{background:#0e1712;border:1px solid #2c3d32;border-radius:14px;padding:1.1rem;box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+.b-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:.9rem}
+.b-head .d{font-family:var(--disp);font-size:.95rem;color:#8fa296}
+.b-head .clk{font-family:var(--disp);font-weight:800;font-size:2.4rem;color:#fff;line-height:1}
+.b-sede{font-family:var(--disp);font-weight:700;color:#fff;font-size:1.05rem;margin:.7rem 0 .4rem;display:flex;gap:.5rem;align-items:center}
+.b-sede span{background:var(--red);font-size:.8rem;padding:.05rem .45rem;border-radius:4px}
+.t{display:grid;grid-template-columns:8.2rem 1fr auto;align-items:center;gap:.6rem;padding:.45rem .6rem;border-radius:7px;
+  background:#16231b;margin:.3rem 0;border-left:4px solid var(--red)}
+.t b{font-family:var(--disp);font-size:1.1rem;color:#fff;white-space:nowrap}
+.t .n{font-size:.9rem;color:#dfe8e1;line-height:1.2}
+.t .n small{display:block;color:#7f9486;font-size:.75rem}
+.t i{font-style:normal;font-family:var(--disp);font-weight:700;font-size:.8rem;padding:.12rem .45rem;border-radius:4px;background:rgba(211,52,42,.2);color:#ff8d84}
+.t.free{border-left-color:#3fbf73}.t.free i{background:rgba(63,191,115,.18);color:#86e2aa}
+.t.live{border-left-color:var(--gold);background:#231f12}.t.live i{background:rgba(227,160,25,.22);color:#ffcf6a}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+.sec{padding:4rem 0}
+.sec h2{border:0;margin-top:0}
+.two{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:1.5rem}
+.two h3{margin-top:0}
+.two p{color:var(--ink2)}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:1.5rem;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--paper)}
+.flow>div{padding:1.4rem;border-right:2px solid var(--ink)}
+.flow>div:last-child{border-right:0}
+.flow .k{font-family:var(--disp);font-weight:800;font-size:2.2rem;color:var(--red);line-height:1}
+.flow h3{margin:.4rem 0}
+.sedes{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem}
+.sede{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1.5rem;border-top:6px solid var(--red);box-shadow:0 12px 30px -18px rgba(22,34,27,.45)}
+.sede h3{margin:0 0 .2rem;font-size:1.6rem}
+.sede .dir{color:var(--ink2)}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.9rem}
+.chips span{font-family:var(--disp);font-weight:700;background:var(--pitch-l);color:var(--pitch);padding:.2rem .6rem;border-radius:5px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.5rem}
+.links a{display:block;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem;text-decoration:none;color:var(--ink)}
+.links a:hover{border-color:var(--red)}
+.links b{font-family:var(--disp);font-size:1.25rem;display:block}
+.links span{color:var(--ink2);font-size:.95rem}
+.band{background:var(--pitch);color:#fff}
+.band h2,.band p{color:#fff}
+.band p{color:#dcefe2;max-width:60ch}
+@media(max-width:860px){.hero-in,.two,.flow,.sedes{grid-template-columns:1fr}.flow>div{border-right:0;border-bottom:2px solid var(--ink)}.flow>div:last-child{border-bottom:0}}
+</style>
 </head>
-<body style="background:#0d0f14;color:#f2f5fa;font-family:sans-serif;text-align:center;padding-top:20vh">
-  <p>Cargando la pantalla…</p>
-  <p><a style="color:#f2a81d" href="/pantalla/index.html">Pantalla</a> ·
-     <a style="color:#f2a81d" href="/admin/">Panel de administración</a></p>
+<body>
+<header class="top">
+  <a class="brand" href="index.html">TURIN SPORT</a>
+  <nav aria-label="Secciones">
+    <a href="index.html" data-p="index" aria-current="page">Inicio</a>
+    <a href="documentacion.html" data-p="documentacion">Documentación</a>
+    <a href="manual.html" data-p="manual">Manual de usuario</a>
+    <a href="faq.html" data-p="faq">Preguntas frecuentes</a>
+    <a href="https://canchasgod-production.up.railway.app/">Turnero</a>
+    <a href="https://control-de-stock-proyecto-production.up.railway.app/">Kiosco</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <div>
+      <h1>Cada turno del complejo, en una sola pantalla</h1>
+      <p>Recepción carga las reservas desde el panel y la pantalla de Turin Sport las muestra al instante, sede por sede.</p>
+      <div class="cta">
+        <a class="btn" href="https://canchasgod-production.up.railway.app/pantalla/">Ver la pantalla en vivo</a>
+        <a class="btn alt" href="manual.html#inicio-rapido">Empezar a usarlo</a>
+      </div>
+    </div>
+
+    <div class="board" aria-label="Ejemplo de la pantalla de turnos">
+      <div class="b-head">
+        <div><div class="d">Turnos de hoy</div><div class="d" id="bd">Martes 22 sep.</div></div>
+        <div class="clk" id="bc">18:05</div>
+      </div>
+      <div class="b-sede"><span>Sede 1</span> San Leonardo Murialdo 909</div>
+      <div class="t"><b>17:00 – 18:00</b><div class="n">Ramírez, J.<small>Cancha 1</small></div><i>Reservado</i></div>
+      <div class="t live"><b>18:00 – 19:00</b><div class="n">Club Atletismo<small>Cancha 2</small></div><i>En juego</i></div>
+      <div class="t free"><b>20:00 – 21:00</b><div class="n">Disponible<small>Cancha 3</small></div><i>Disponible</i></div>
+      <div class="b-sede"><span>Sede 2</span> La Cautiva 7654</div>
+      <div class="t live"><b>18:00 – 19:00</b><div class="n">Torneo Interno<small>Cancha 1 · Fútbol 11</small></div><i>En juego</i></div>
+      <div class="t"><b>21:00 – 22:00</b><div class="n">Luciana R.<small>Cancha 2 · Fútbol 7</small></div><i>Reservado</i></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <h2>Cómo funciona</h2>
+    <p class="lead">Tres piezas conectadas. Nadie tiene que tocar código para usarlas.</p>
+    <div class="flow">
+      <div><div class="k">1</div><h3>Recepción carga el turno</h3><p>Desde el panel elige sede, horario en punto, cancha y quién reservó. En La Cautiva también el tipo de cancha.</p></div>
+      <div><div class="k">2</div><h3>Se guarda en la base</h3><p>El sistema online en Railway guarda el turno en MySQL y lo deja disponible para la pantalla.</p></div>
+      <div><div class="k">3</div><h3>La pantalla se actualiza</h3><p>En menos de dos minutos el turno aparece en el TV, pintado de rojo, verde o dorado según su estado.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <h2>Lo que resuelve</h2>
+    <div class="two">
+      <div><h3>Adiós a la planilla en papel</h3><p>Los turnos del día quedan en un solo lugar, ordenados por hora y por sede, y se pueden editar o borrar con un clic.</p></div>
+      <div><h3>Los jugadores ven su horario</h3><p>La pantalla muestra qué se juega ahora, qué viene y qué horarios siguen libres, sin tener que preguntar en recepción.</p></div>
+      <div><h3>Dos sedes, un solo panel</h3><p>Murialdo y La Cautiva se manejan desde la misma cuenta. Cada turno indica su sede y su cancha.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <h2>Y el kiosco, también bajo control</h2>
+    <div class="two">
+      <div><h3>Stock desde el celular</h3><p>Un toque en “−” por cada venta. Los 29 productos del kiosco, con buscador y filtro por categoría.</p></div>
+      <div><h3>Aviso antes de quedarse sin nada</h3><p>Cuando un producto baja del doble de lo que se vende en un finde, la app lo marca en rojo.</p></div>
+      <div><h3>Cuánto comprar, ya calculado</h3><p>Las sugerencias dicen cuántos packs reponer, y al comprarlos se suman al stock con un toque.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band">
+  <div class="wrap">
+    <h2>Nuestras sedes</h2>
+    <p>Las dos sedes aparecen en la pantalla, cada una con sus turnos del día.</p>
+  </div>
+</section>
+<section class="sec" style="padding-top:0;margin-top:-2.5rem">
+  <div class="wrap">
+    <div class="sedes">
+      <div class="sede"><h3>Sede 1</h3><div class="dir">San Leonardo Murialdo 909</div>
+        <div class="chips"><span>Cancha 1</span><span>Cancha 2</span><span>Cancha 3</span></div></div>
+      <div class="sede" style="border-top-color:var(--gold)"><h3>Sede 2</h3><div class="dir">La Cautiva 7654</div>
+        <div class="chips"><span>Fútbol 5</span><span>Fútbol 7</span><span>Fútbol 11</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:1rem">
+  <div class="wrap">
+    <h2>Accesos del proyecto</h2>
+    <div class="links">
+      <a href="https://canchasgod-production.up.railway.app/"><b>Turnero online</b><span>Pantalla del TV y panel de turnos, en Railway.</span></a>
+      <a href="https://control-de-stock-proyecto-production.up.railway.app/"><b>Control de stock online</b><span>App del kiosco, en Railway.</span></a>
+      <a href="https://github.com/pedrocaseres088-ai/canchasgod"><b>GitHub del turnero</b><span>Código fuente completo del turnero.</span></a>
+      <a href="https://github.com/pedrocaseres088-ai/control-de-stock-proyecto"><b>GitHub del control de stock</b><span>Código fuente de la app del kiosco.</span></a>
+      <a href="documentacion.html"><b>Documentación del proyecto</b><span>Requisitos, arquitectura, base de datos y bitácora.</span></a>
+      <a href="manual.html"><b>Manual de usuario</b><span>Guía de inicio rápido y uso diario del panel.</span></a>
+      <a href="faq.html"><b>Preguntas frecuentes</b><span>Dudas habituales de recepción y administración.</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">Turin Sport · Turnero de canchas y control de stock del kiosco · 7mo Informática 2026</footer>
+
+<script>
+/* El tablero de ejemplo muestra la hora y el día reales */
+(function(){
+  const d=new Date(),dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+  m=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  document.getElementById('bd').textContent=dias[d.getDay()]+' '+d.getDate()+' '+m[d.getMonth()]+'.';
+  document.getElementById('bc').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+})();
+</script>
 </body>
 </html>
