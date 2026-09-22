@@ -1,0 +1,103 @@
+/* ====== Panel de administración — Turin Sport ====== */
+:root{
+  --bg:#0d0f14; --panel:#161a21; --panel2:#1b202a; --line:rgba(255,255,255,.09);
+  --red:#e23b30; --red-d:#b02820; --gold:#f2a81d; --green:#2fbf71;
+  --ink:#f2f5fa; --ink2:#9aa3b3; --ink3:#5a6272;
+  --font:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:
+  radial-gradient(900px 500px at 85% -10%,rgba(226,59,48,.10),transparent 60%),var(--bg);
+  color:var(--ink);min-height:100vh;padding-bottom:3rem;}
+a{color:inherit;text-decoration:none;}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1.4rem;background:linear-gradient(180deg,#12151b,#0d0f14);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;}
+.topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--red) 0 55%,var(--gold) 55% 100%);}
+.topbar-brand{font-weight:800;letter-spacing:.06em;font-size:1.05rem;}
+.topbar-brand span{color:var(--ink3);font-weight:500;letter-spacing:.02em;}
+.topbar-right{display:flex;align-items:center;gap:.7rem;}
+.user-chip{font-size:.78rem;color:var(--ink2);background:var(--panel);
+  padding:.35rem .7rem;border-radius:20px;border:1px solid var(--line);text-transform:capitalize;}
+
+.wrap{max-width:960px;margin:0 auto;padding:1.4rem;}
+
+/* Alertas */
+.alerta{padding:.7rem 1rem;border-radius:9px;margin-bottom:1rem;font-size:.9rem;font-weight:600;}
+.alerta.ok{background:rgba(47,191,113,.14);color:#7fe0aa;border:1px solid rgba(47,191,113,.35);}
+.alerta.err{background:rgba(226,59,48,.14);color:#ff8b82;border:1px solid rgba(226,59,48,.35);}
+
+/* Barra de fecha */
+.fecha-bar{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.fecha-bar label{color:var(--ink2);font-weight:600;}
+.fecha-linda{color:var(--ink3);font-size:.9rem;text-transform:capitalize;}
+
+/* Cards */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  padding:1.2rem 1.3rem;margin-bottom:1.3rem;}
+.card h2{font-size:1.05rem;margin-bottom:1rem;}
+.sede-titulo{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.sede-titulo small{color:var(--ink3);font-weight:500;font-size:.78rem;margin-left:auto;}
+.pill-sede{background:rgba(226,59,48,.16);color:#ff6b60;border:1px solid rgba(226,59,48,.35);
+  padding:.15rem .55rem;border-radius:6px;font-size:.8rem;font-weight:700;}
+
+/* Formulario */
+.grid-form{display:grid;grid-template-columns:1fr;gap:.9rem;max-width:520px;}
+.grid-form>div{display:flex;flex-direction:column;}
+.form-actions{flex-direction:row!important;gap:.7rem;margin-top:.3rem;}
+label{font-size:.76rem;color:var(--ink2);font-weight:600;margin-bottom:.32rem;letter-spacing:.02em;}
+input,select{background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+  color:var(--ink);padding:.6rem .7rem;font-size:.92rem;font-family:inherit;width:100%;}
+input:focus,select:focus{outline:none;border-color:var(--gold);}
+
+/* Botones */
+.btn{background:linear-gradient(135deg,var(--red),var(--red-d));color:#fff;border:none;
+  padding:.62rem 1.2rem;border-radius:9px;font-weight:700;font-size:.92rem;cursor:pointer;}
+.btn:hover{filter:brightness(1.08);}
+.btn-ghost{background:var(--panel2);border:1px solid var(--line);color:var(--ink2);
+  padding:.5rem .85rem;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink3);}
+.btn-mini{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  padding:.32rem .6rem;border-radius:7px;font-size:.76rem;font-weight:600;cursor:pointer;}
+.btn-mini:hover{border-color:var(--gold);}
+.btn-mini.danger:hover{border-color:var(--red);color:#ff8b82;}
+.inline{display:inline;}
+
+/* Tabla */
+.tabla{width:100%;border-collapse:collapse;font-size:.9rem;}
+.tabla th{text-align:left;color:var(--ink3);font-size:.72rem;text-transform:uppercase;
+  letter-spacing:.06em;padding:.4rem .6rem;border-bottom:1px solid var(--line);}
+.tabla td{padding:.55rem .6rem;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle;}
+.tabla tr:last-child td{border-bottom:none;}
+.mono{font-variant-numeric:tabular-nums;font-weight:600;}
+.muted{color:var(--ink3);font-style:normal;}
+.acciones{display:flex;gap:.4rem;align-items:center;justify-content:flex-end;}
+.vacio{color:var(--ink3);font-size:.9rem;padding:.5rem 0;}
+
+.estado{padding:.2rem .55rem;border-radius:6px;font-size:.72rem;font-weight:700;}
+.estado-reservado{background:rgba(226,59,48,.16);color:#ff6b60;}
+.estado-libre{background:rgba(47,191,113,.16);color:#7fe0aa;}
+
+.tipo-tag{display:inline-block;margin-left:.4rem;padding:.12rem .45rem;border-radius:5px;
+  font-size:.7rem;font-weight:700;background:rgba(242,168,29,.15);color:var(--gold);
+  border:1px solid rgba(242,168,29,.35);}
+
+.pie{color:var(--ink3);font-size:.82rem;text-align:center;margin-top:.5rem;}
+
+/* Login */
+.login-body{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.login-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  padding:2rem;width:320px;display:flex;flex-direction:column;gap:.55rem;position:relative;}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;
+  background:linear-gradient(90deg,var(--red) 0 55%,var(--gold) 55% 100%);}
+.login-brand{font-weight:800;font-size:1.5rem;letter-spacing:.06em;text-align:center;margin-top:.4rem;}
+.login-sub{color:var(--ink3);text-align:center;font-size:.82rem;margin-bottom:.6rem;}
+.login-card button{margin-top:.6rem;}
+
+@media(max-width:640px){
+  .grid-form{grid-template-columns:1fr;}
+  .acciones{flex-wrap:wrap;}
+}
