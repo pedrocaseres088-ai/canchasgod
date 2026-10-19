@@ -62,7 +62,7 @@
 <ol class="steps">
 <li><h4>Entrá al panel</h4>Abrí <a href="https://canchasgod-production.up.railway.app/admin/">canchasgod-production.up.railway.app/admin</a> e ingresá tu usuario y contraseña.</li>
 <li><h4>Elegí el día</h4>Arriba aparece el día de hoy. Si el turno es para otro día, cambiá la fecha en el calendario.</li>
-<li><h4>Completá el turno</h4>Elegí la sede, la hora de inicio (la de fin se completa sola una hora después), la cancha y el nombre de quien reserva. En La Cautiva elegí también el tipo de cancha.</li>
+<li><h4>Completá el turno</h4>Elegí la sede, la hora de inicio (la de fin se completa sola una hora después), el tipo de cancha y el nombre de quien reserva.</li>
 <li><h4>Tocá “Guardar turno”</h4>Aparece el mensaje “Turno guardado correctamente” y el turno se suma a la tabla de su sede.</li>
 <li><h4>Mirá la pantalla</h4>En menos de dos minutos el turno aparece en el TV del complejo.</li>
 </ol>
@@ -103,7 +103,7 @@
 <tr><td>Sede</td><td>Sede 1 (San Leonardo Murialdo 909) o Sede 2 (La Cautiva 7654).</td></tr>
 <tr><td>Desde</td><td>Hora de inicio, siempre en punto.</td></tr>
 <tr><td>Hasta</td><td>Hora de fin. Se completa sola con una hora más.</td></tr>
-<tr><td>Tipo de cancha</td><td>Solo aparece en La Cautiva: Fútbol 5, 7 u 11.</td></tr>
+<tr><td>Tipo de cancha</td><td>Sede 1: Fútbol 5 (su única cancha). Sede 2: Fútbol 5, 7 u 11.</td></tr>
 <tr><td>Estado</td><td>Reservado o Libre / Disponible.</td></tr>
 <tr><td>Reservado por</td><td>Nombre de la persona o del equipo. Se oculta si el turno es libre.</td></tr>
 </tbody></table></div>
@@ -111,8 +111,8 @@
 <h3 id="m4-1">Horarios</h3>
 <p>Los turnos van siempre de hora en punto a hora en punto: 13 a 14, 15 a 16, etc. No se pueden cargar minutos. Al elegir “Desde”, el campo “Hasta” se ajusta solo a una hora después; si el turno dura más (por ejemplo, un torneo de 19 a 21), cambiá “Hasta” a mano. La lista de “Hasta” solo muestra horas posteriores al inicio, así que no se puede cargar un horario al revés.</p>
 
-<h3 id="m4-2">Tipo de cancha (solo La Cautiva)</h3>
-<p>Al elegir la Sede 2 aparece el campo <strong>Tipo de cancha</strong> con Fútbol 5, Fútbol 7 y Fútbol 11. Es obligatorio en esa sede para que el jugador sepa qué cancha alquila. En la Sede 1 el campo no aparece. El tipo se ve en la tabla del panel como una etiqueta en la columna “Tipo de cancha”, y en el TV como “Fútbol 7”.</p>
+<h3 id="m4-2">Tipo de cancha</h3>
+<p>El campo <strong>Tipo de cancha</strong> es obligatorio y depende de la sede: la Sede 1 (San Leonardo Murialdo) tiene una sola cancha, Fútbol 5, y la Sede 2 (La Cautiva) tiene Fútbol 5, Fútbol 7 y Fútbol 11. El tipo se ve en la tabla del panel como una etiqueta en la columna “Tipo de cancha”, y en el TV como “Fútbol 7”.</p>
 
 <h3 id="m4-3">Reservado o libre</h3>
 <p><strong>Reservado</strong> es un turno con alguien asignado; en el TV se ve en rojo y, cuando llega su hora, en dorado como “En juego”. Si no escribís un nombre, se guarda como “Reservado”.</p>
@@ -147,7 +147,7 @@
 <tbody>
 <tr><td>Usuario o contraseña incorrectos</td><td>Revisá lo que escribiste. Si no te acordás, pedile al administrador que te la restablezca.</td></tr>
 <tr><td>Horario inválido</td><td>Elegí horas en punto y que “Hasta” sea después de “Desde”.</td></tr>
-<tr><td>Elegí el tipo de cancha para esta sede</td><td>En La Cautiva el tipo de cancha es obligatorio.</td></tr>
+<tr><td>Elegí el tipo de cancha para esta sede</td><td>El tipo de cancha es obligatorio en ambas sedes.</td></tr>
 <tr><td>No tenés permisos para realizar esta acción</td><td>Tu usuario no tiene un rol habilitado. Avisale al administrador.</td></tr>
 <tr><td>Error de conexión a la base de datos</td><td>El servidor no llega a la base. Es un problema técnico: ver sección 8.</td></tr>
 </tbody></table></div>

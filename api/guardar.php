@@ -59,7 +59,7 @@ if (!$sede) {
     rechazar('La sede elegida no existe.');
 }
 
-// Tipo de cancha: solo se guarda si la sede tiene tipos (Fútbol 5 / 7 / 11).
+// Tipo de cancha: la sede define cuáles tiene (Sede 1: Fútbol 5; Sede 2: Fútbol 5, 7 y 11).
 $tiposSede = array_filter(array_map('trim', explode(',', (string)$sede[0])));
 if ($tiposSede) {
     if (!in_array($tipo, $tiposSede, true)) {

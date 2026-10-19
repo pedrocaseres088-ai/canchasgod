@@ -16,7 +16,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
 
 $sedes = $pdo->query("SELECT id, nombre, direccion, tipos_cancha FROM sedes ORDER BY orden, id")->fetchAll();
 
-// Tipos de cancha por sede (solo La Cautiva los tiene)
+// Tipos de cancha por sede (Sede 1: Fútbol 5; Sede 2: Fútbol 5, 7 y 11)
 $tiposPorSede = [];
 foreach ($sedes as $s) {
     $tiposPorSede[$s['id']] = array_values(array_filter(array_map('trim', explode(',', (string)($s['tipos_cancha'] ?? '')))));

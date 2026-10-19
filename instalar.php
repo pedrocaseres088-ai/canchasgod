@@ -95,7 +95,7 @@ try {
     // Sedes
     if ((int)$pdo->query("SELECT COUNT(*) FROM sedes")->fetchColumn() === 0) {
         $pdo->exec("INSERT INTO sedes (nombre, direccion, orden, tipos_cancha) VALUES
-            ('Sede 1', 'San Leonardo Murialdo 909', 1, NULL),
+            ('Sede 1', 'San Leonardo Murialdo 909', 1, 'Fútbol 5'),
             ('Sede 2', 'La Cautiva 7654', 2, 'Fútbol 5,Fútbol 7,Fútbol 11')");
         ok('Sedes cargadas: San Leonardo Murialdo 909 y La Cautiva 7654');
     } else {
@@ -103,6 +103,16 @@ try {
                     WHERE direccion LIKE '%Cautiva%' AND (tipos_cancha IS NULL OR tipos_cancha = '')");
         inf('Las sedes ya existían (no se duplicaron)');
     }
+
+    // San Leonardo Murialdo tiene una sola cancha: Fútbol 5.
+    $n = $pdo->exec("UPDATE sedes SET tipos_cancha = 'Fútbol 5'
+                     WHERE direccion LIKE '%Murialdo%' AND (tipos_cancha IS NULL OR tipos_cancha = '')");
+    if ($n) ok('Sede San Leonardo Murialdo: cancha Fútbol 5');
+    // Los turnos viejos de esa sede (sin tipo) pasan a Fútbol 5.
+    $n = $pdo->exec("UPDATE turnos t JOIN sedes s ON s.id = t.sede_id
+                     SET t.tipo_cancha = 'Fútbol 5'
+                     WHERE s.direccion LIKE '%Murialdo%' AND (t.tipo_cancha IS NULL OR t.tipo_cancha = '')");
+    if ($n) ok("$n turno(s) viejos de Murialdo marcados como Fútbol 5");
 
     // Usuarios
     $usuarios = [

@@ -68,20 +68,20 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 -- Las dos sedes
 INSERT INTO sedes (nombre, direccion, orden, tipos_cancha) VALUES
-  ('Sede 1', 'San Leonardo Murialdo 909', 1, NULL),
+  ('Sede 1', 'San Leonardo Murialdo 909', 1, 'Fútbol 5'),
   ('Sede 2', 'La Cautiva 7654', 2, 'Fútbol 5,Fútbol 7,Fútbol 11');
 
 -- Turnos de ejemplo para HOY (para que la pantalla muestre algo enseguida).
--- Sede 1 = id 1 (sin tipos), Sede 2 = id 2 (Fútbol 5 / 7 / 11)
+-- Sede 1 = id 1 (Fútbol 5), Sede 2 = id 2 (Fútbol 5 / 7 / 11)
 INSERT INTO turnos (sede_id, fecha, hora_inicio, hora_fin, tipo_cancha, cliente, estado) VALUES
-  (1, CURDATE(), '08:00','09:00',NULL,'Matías G.','reservado'),
-  (1, CURDATE(), '09:00','10:00',NULL,'Club Atletismo','reservado'),
-  (1, CURDATE(), '10:00','11:00',NULL,'Pablo R.','reservado'),
-  (1, CURDATE(), '11:00','12:00',NULL,NULL,'libre'),
-  (1, CURDATE(), '16:00','17:00',NULL,'Sebastián L.','reservado'),
-  (1, CURDATE(), '17:00','18:00',NULL,'Ramírez, J.','reservado'),
-  (1, CURDATE(), '20:00','21:00',NULL,NULL,'libre'),
-  (1, CURDATE(), '21:00','22:00',NULL,'Jorge S.','reservado'),
+  (1, CURDATE(), '08:00','09:00','Fútbol 5','Matías G.','reservado'),
+  (1, CURDATE(), '09:00','10:00','Fútbol 5','Club Atletismo','reservado'),
+  (1, CURDATE(), '10:00','11:00','Fútbol 5','Pablo R.','reservado'),
+  (1, CURDATE(), '11:00','12:00','Fútbol 5',NULL,'libre'),
+  (1, CURDATE(), '16:00','17:00','Fútbol 5','Sebastián L.','reservado'),
+  (1, CURDATE(), '17:00','18:00','Fútbol 5','Ramírez, J.','reservado'),
+  (1, CURDATE(), '20:00','21:00','Fútbol 5',NULL,'libre'),
+  (1, CURDATE(), '21:00','22:00','Fútbol 5','Jorge S.','reservado'),
   (2, CURDATE(), '09:00','10:00','Fútbol 5','Escuelita de Fútbol','reservado'),
   (2, CURDATE(), '10:00','11:00','Fútbol 7','Gonzalo P.','reservado'),
   (2, CURDATE(), '13:00','14:00','Fútbol 7',NULL,'libre'),
