@@ -98,14 +98,6 @@ $fechaLinda = $diasSemana[(int)date('w', $tsFecha)] . ' ' . date('d/m/Y', $tsFec
         <select name="hora_fin" id="f-fin" required></select>
       </div>
 
-      <div>
-        <label>Cancha</label>
-        <input type="text" name="cancha" id="f-cancha" list="canchas" value="Cancha 1">
-        <datalist id="canchas">
-          <option>Cancha 1</option><option>Cancha 2</option><option>Cancha 3</option>
-        </datalist>
-      </div>
-
       <div id="tipo-box">
         <label>Tipo de cancha</label>
         <select name="tipo_cancha" id="f-tipo"></select>
@@ -144,12 +136,12 @@ $fechaLinda = $diasSemana[(int)date('w', $tsFecha)] . ' ' . date('d/m/Y', $tsFec
         <p class="vacio">Todavía no hay turnos cargados para este día en esta sede.</p>
       <?php else: ?>
       <table class="tabla">
-        <thead><tr><th>Horario</th><th>Cancha</th><th>Reservado por</th><th>Estado</th><th></th></tr></thead>
+        <thead><tr><th>Horario</th><th>Tipo de cancha</th><th>Reservado por</th><th>Estado</th><th></th></tr></thead>
         <tbody>
         <?php foreach ($turnos as $t): ?>
           <tr>
             <td class="mono"><?= substr($t['hora_inicio'],0,5) ?> – <?= substr($t['hora_fin'],0,5) ?></td>
-            <td><?= h($t['cancha']) ?><?php if (!empty($t['tipo_cancha'])): ?><span class="tipo-tag"><?= h($t['tipo_cancha']) ?></span><?php endif; ?></td>
+            <td><?php if (!empty($t['tipo_cancha'])): ?><span class="tipo-tag"><?= h($t['tipo_cancha']) ?></span><?php else: ?><span class="muted">—</span><?php endif; ?></td>
             <td><?= $t['estado']==='libre' ? '<i class="muted">Disponible</i>' : h($t['cliente']) ?></td>
             <td>
               <span class="estado estado-<?= h($t['estado']) ?>">
@@ -161,7 +153,7 @@ $fechaLinda = $diasSemana[(int)date('w', $tsFecha)] . ' ' . date('d/m/Y', $tsFec
                 onclick='editar(<?= json_encode([
                   "id"=>$t["id"], "sede_id"=>$t["sede_id"],
                   "ini"=>substr($t["hora_inicio"],0,5), "fin"=>substr($t["hora_fin"],0,5),
-                  "cancha"=>$t["cancha"], "tipo"=>$t["tipo_cancha"], "cliente"=>$t["cliente"], "estado"=>$t["estado"]
+                  "tipo"=>$t["tipo_cancha"], "cliente"=>$t["cliente"], "estado"=>$t["estado"]
                 ], JSON_HEX_APOS|JSON_HEX_QUOT|JSON_UNESCAPED_UNICODE) ?>)'>Editar</button>
               <form method="post" action="/api/eliminar.php" class="inline"
                     onsubmit="return confirm('¿Borrar este turno?')">
@@ -219,7 +211,6 @@ function editar(t){
   document.getElementById('f-ini').value = t.ini.slice(0,2) + ':00';
   actualizarFin(t.fin.slice(0,2) + ':00');
   toggleTipo(t.tipo);
-  document.getElementById('f-cancha').value = t.cancha;
   document.getElementById('f-estado').value = t.estado;
   document.getElementById('f-cliente').value = t.cliente || '';
   document.getElementById('form-titulo').textContent = 'Editar turno';

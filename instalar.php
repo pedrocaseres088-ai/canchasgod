@@ -14,6 +14,24 @@ $log = [];
 function ok($m)  { global $log; $log[] = "✅ $m"; }
 function inf($m) { global $log; $log[] = "ℹ️ $m"; }
 
+/* Agrega una restricción CHECK si todavía no existe. Si la base ya tiene datos
+   que no la cumplen (o la versión de MySQL no soporta CHECK), avisa y sigue. */
+function agregar_check(PDO $pdo, $tabla, $nombre, $condicion, $descripcion) {
+    $q = $pdo->prepare("SELECT 1 FROM information_schema.TABLE_CONSTRAINTS
+                        WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = ?");
+    $q->execute([$tabla, $nombre]);
+    if ($q->fetch()) {
+        inf("Restricción ya aplicada: $descripcion");
+        return;
+    }
+    try {
+        $pdo->exec("ALTER TABLE `$tabla` ADD CONSTRAINT `$nombre` CHECK ($condicion)");
+        ok("Restricción aplicada: $descripcion");
+    } catch (Throwable $e) {
+        inf("⚠️ No se pudo aplicar «$descripcion» (¿hay datos viejos que no la cumplen?). Corregí esos datos y volvé a correr este instalador.");
+    }
+}
+
 try {
     $pdo->exec("SET NAMES utf8mb4");
 
@@ -31,7 +49,7 @@ try {
         fecha DATE NOT NULL,
         hora_inicio TIME NOT NULL,
         hora_fin TIME NOT NULL,
-        cancha VARCHAR(40) NOT NULL DEFAULT 'Cancha 1',
+        cancha VARCHAR(40) NOT NULL DEFAULT '',
         tipo_cancha VARCHAR(30) NULL,
         cliente VARCHAR(80) NULL,
         estado ENUM('reservado','libre') NOT NULL DEFAULT 'reservado',
@@ -53,6 +71,26 @@ try {
     if (!$pdo->query("SHOW COLUMNS FROM turnos LIKE 'tipo_cancha'")->fetch()) {
         $pdo->exec("ALTER TABLE turnos ADD COLUMN tipo_cancha VARCHAR(30) NULL AFTER cancha");
     }
+
+    // "Cancha 1 / Cancha 2" ya no se usa: la columna queda solo por compatibilidad.
+    $pdo->exec("ALTER TABLE turnos MODIFY cancha VARCHAR(40) NOT NULL DEFAULT ''");
+
+    // Restricciones de seguridad / integridad
+    agregar_check($pdo, 'turnos', 'chk_turnos_horario',
+        'hora_fin > hora_inicio',
+        'el turno termina después de empezar');
+    agregar_check($pdo, 'turnos', 'chk_turnos_hora_punto',
+        'MINUTE(hora_inicio) = 0 AND SECOND(hora_inicio) = 0 AND MINUTE(hora_fin) = 0 AND SECOND(hora_fin) = 0',
+        'solo horas en punto');
+    agregar_check($pdo, 'turnos', 'chk_turnos_cliente',
+        "(estado = 'libre' AND cliente IS NULL) OR (estado = 'reservado' AND cliente IS NOT NULL AND CHAR_LENGTH(TRIM(cliente)) > 0)",
+        'libre = sin cliente, reservado = con cliente');
+    agregar_check($pdo, 'usuarios', 'chk_usuarios_nombre',
+        "usuario REGEXP '^[A-Za-z0-9_.-]{3,40}\$'",
+        'nombre de usuario válido (3 a 40, letras/números/_ . -)');
+    agregar_check($pdo, 'usuarios', 'chk_usuarios_hash',
+        'CHAR_LENGTH(clave_hash) >= 60',
+        'no se pueden guardar contraseñas en texto plano');
 
     // Sedes
     if ((int)$pdo->query("SELECT COUNT(*) FROM sedes")->fetchColumn() === 0) {

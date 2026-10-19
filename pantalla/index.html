@@ -413,22 +413,22 @@ const API='/api/turnos.php?fecha=hoy';   /* si la pantalla está en OTRO dominio
 
 const DEMO=[
   {nombre:'Sede 1',direccion:'San Leonardo Murialdo 909',turnos:[
-    {inicio:'08:00',fin:'09:00',cancha:'Cancha 1',cliente:'Matías G.',estado:'reservado'},
-    {inicio:'09:00',fin:'10:00',cancha:'Cancha 2',cliente:'Club Atletismo',estado:'reservado'},
-    {inicio:'10:00',fin:'11:00',cancha:'Cancha 1',cliente:'Pablo R.',estado:'reservado'},
-    {inicio:'11:00',fin:'12:00',cancha:'Cancha 1',cliente:null,estado:'libre'},
-    {inicio:'16:00',fin:'17:00',cancha:'Cancha 3',cliente:'Sebastián L.',estado:'reservado'},
-    {inicio:'17:00',fin:'18:00',cancha:'Cancha 1',cliente:'Ramírez, J.',estado:'reservado'},
-    {inicio:'20:00',fin:'21:00',cancha:'Cancha 3',cliente:null,estado:'libre'},
-    {inicio:'21:00',fin:'22:00',cancha:'Cancha 1',cliente:'Jorge S.',estado:'reservado'},
+    {inicio:'08:00',fin:'09:00',cliente:'Matías G.',estado:'reservado'},
+    {inicio:'09:00',fin:'10:00',cliente:'Club Atletismo',estado:'reservado'},
+    {inicio:'10:00',fin:'11:00',cliente:'Pablo R.',estado:'reservado'},
+    {inicio:'11:00',fin:'12:00',cliente:null,estado:'libre'},
+    {inicio:'16:00',fin:'17:00',cliente:'Sebastián L.',estado:'reservado'},
+    {inicio:'17:00',fin:'18:00',cliente:'Ramírez, J.',estado:'reservado'},
+    {inicio:'20:00',fin:'21:00',cliente:null,estado:'libre'},
+    {inicio:'21:00',fin:'22:00',cliente:'Jorge S.',estado:'reservado'},
   ]},
   {nombre:'Sede 2',direccion:'La Cautiva 7654',turnos:[
-    {inicio:'09:00',fin:'10:00',cancha:'Cancha 1',cliente:'Escuelita de Fútbol',estado:'reservado'},
-    {inicio:'10:00',fin:'11:00',cancha:'Cancha 2',cliente:'Gonzalo P.',estado:'reservado'},
-    {inicio:'13:00',fin:'14:00',cancha:'Cancha 2',cliente:null,estado:'libre'},
-    {inicio:'16:00',fin:'17:00',cancha:'Cancha 2',cliente:'Luciana R.',estado:'reservado'},
-    {inicio:'18:00',fin:'19:00',cancha:'Cancha 1',cliente:'Torneo Interno',estado:'reservado'},
-    {inicio:'21:00',fin:'22:00',cancha:'Cancha 2',cliente:null,estado:'libre'},
+    {inicio:'09:00',fin:'10:00',tipo:'Fútbol 5',cliente:'Escuelita de Fútbol',estado:'reservado'},
+    {inicio:'10:00',fin:'11:00',tipo:'Fútbol 7',cliente:'Gonzalo P.',estado:'reservado'},
+    {inicio:'13:00',fin:'14:00',tipo:'Fútbol 7',cliente:null,estado:'libre'},
+    {inicio:'16:00',fin:'17:00',tipo:'Fútbol 7',cliente:'Luciana R.',estado:'reservado'},
+    {inicio:'18:00',fin:'19:00',tipo:'Fútbol 11',cliente:'Torneo Interno',estado:'reservado'},
+    {inicio:'21:00',fin:'22:00',tipo:'Fútbol 5',cliente:null,estado:'libre'},
   ]},
 ];
 
@@ -441,7 +441,7 @@ function turnoHTML(t){
     <div class="turn-body">
       <div class="turn-time">${t.inicio} – ${t.fin}</div>
       <div class="turn-name">${t.cliente||'Disponible'}</div>
-      <div class="turn-cancha">${t.cancha}${t.tipo?' · '+t.tipo:''}</div>
+      ${t.tipo?`<div class="turn-cancha">${t.tipo}</div>`:''}
     </div>
     <div class="turn-pill"><span class="dot"></span><span class="txt"></span></div>
   </div>`;

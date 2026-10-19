@@ -19,7 +19,7 @@ try {
     $sedes = $pdo->query("SELECT id, nombre, direccion FROM sedes ORDER BY orden, id")->fetchAll();
 
     $stmt = $pdo->prepare(
-        "SELECT hora_inicio, hora_fin, cancha, tipo_cancha, cliente, estado
+        "SELECT hora_inicio, hora_fin, tipo_cancha, cliente, estado
          FROM turnos WHERE sede_id = ? AND fecha = ?
          ORDER BY hora_inicio"
     );
@@ -31,7 +31,6 @@ try {
             return [
                 'inicio'  => substr($t['hora_inicio'], 0, 5),
                 'fin'     => substr($t['hora_fin'], 0, 5),
-                'cancha'  => $t['cancha'],
                 'tipo'    => $t['tipo_cancha'],
                 'cliente' => $t['cliente'],
                 'estado'  => $t['estado'],

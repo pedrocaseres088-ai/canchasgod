@@ -19,8 +19,10 @@ try {
         ]
     );
 } catch (PDOException $e) {
+    // El detalle (host, usuario, etc.) va solo al log del servidor, nunca al visitante.
+    error_log('Error de conexión a la base de datos: ' . $e->getMessage());
     http_response_code(500);
-    die('Error de conexión a la base de datos. Revisá las variables en Railway · ' . $e->getMessage());
+    die('No se pudo conectar con la base de datos. Revisá las variables en Railway (detalle en los logs).');
 }
 
 /* ------------------------------------------------------------
