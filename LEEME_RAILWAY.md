@@ -55,7 +55,7 @@ enlazarlas una vez:
 ## PASO 3 — Llenar la base (un solo click)
 
 1. Entrá en el navegador a:  **`https://TU-DOMINIO/instalar.php`**
-   (tu dominio es `canchas-god-production.up.railway.app`)
+   (tu dominio es `canchasgod-production-a814.up.railway.app`)
 2. Vas a ver ✅ Tablas creadas / Sedes / Turnos / Usuarios.
 3. Listo. **Borrá `instalar.php`** del repo después (por seguridad).
 
