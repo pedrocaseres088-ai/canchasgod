@@ -58,7 +58,8 @@ $fechaLinda = $diasSemana[(int)date('w', $tsFecha)] . ' ' . date('d/m/Y', $tsFec
 
 <main class="wrap">
 
-  <?php if (isset($_GET['ok'])): ?><div class="alerta ok">Turno guardado correctamente.</div><?php endif; ?>
+  <?php if (!empty($_GET['err'])): ?><div class="alerta err"><?= h($_GET['err']) ?></div><?php endif; ?>
+  <?php if (isset($_GET['ok'])): ?><div class="alerta ok">Turno guardado correctamente.</div><?php endif; ?>  
   <?php if (isset($_GET['del'])): ?><div class="alerta ok">Turno eliminado.</div><?php endif; ?>
 
   <!-- Selector de día -->
