@@ -45,3 +45,26 @@ try {
     // Si falla (ej. tablas todavía no creadas), seguimos sin romper la página.
 }
 
+/* Migración: La Cautiva ya no tiene Fútbol 7. */
+try {
+    $pdo->exec("UPDATE sedes SET tipos_cancha = 'Fútbol 5,Fútbol 11'
+                WHERE direccion LIKE '%Cautiva%' AND tipos_cancha LIKE '%Fútbol 7%'");
+} catch (Throwable $e) {
+}
+
+/* Migración: precio guardado en cada turno (para la recaudación). */
+try {
+    $col = $pdo->query("SHOW COLUMNS FROM turnos LIKE 'precio'")->fetch();
+    if (!$col) {
+        $pdo->exec("ALTER TABLE turnos ADD COLUMN precio INT NOT NULL DEFAULT 0");
+        $up = $pdo->prepare(
+            "UPDATE turnos SET precio = ? * (TIME_TO_SEC(hora_fin) - TIME_TO_SEC(hora_inicio)) / 3600
+             WHERE estado = 'reservado' AND tipo_cancha = ?"
+        );
+        foreach (($cfg['precios'] ?? []) as $tipoCancha => $precioHora) {
+            $up->execute([(int)$precioHora, $tipoCancha]);
+        }
+    }
+} catch (Throwable $e) {
+}
+
