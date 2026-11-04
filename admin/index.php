@@ -36,6 +36,25 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 $diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 $tsFecha = strtotime($fecha);
 $fechaLinda = $diasSemana[(int)date('w', $tsFecha)] . ' ' . date('d/m/Y', $tsFecha);
+
+// ---- Recaudación (solo admin): las dos sedes juntas, por tipo de cancha ----
+function plata($n) { return '$ ' . number_format((float)$n, 0, ',', '.'); }
+$esAdmin = (rol_actual() === 'admin');
+$resumenDia = $resumenMes = [];
+if ($esAdmin) {
+    $rq = $pdo->prepare(
+        "SELECT tipo_cancha, COUNT(*) AS n, SUM(precio) AS total FROM turnos
+         WHERE estado = 'reservado' AND tipo_cancha IS NOT NULL AND fecha BETWEEN ? AND ?
+         GROUP BY tipo_cancha"
+    );
+    $rq->execute([$fecha, $fecha]);
+    $resumenDia = $rq->fetchAll(PDO::FETCH_UNIQUE);
+    $rq->execute([date('Y-m-01', $tsFecha), date('Y-m-t', $tsFecha)]);
+    $resumenMes = $rq->fetchAll(PDO::FETCH_UNIQUE);
+    $tiposResumen = array_values(array_unique(array_merge(
+        array_keys($cfgHoras['precios'] ?? []), array_keys($resumenDia), array_keys($resumenMes)
+    )));
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -123,6 +142,37 @@ $fechaLinda = $diasSemana[(int)date('w', $tsFecha)] . ' ' . date('d/m/Y', $tsFec
       </div>
     </form>
   </section>
+     <?php if ($esAdmin): ?>
+  <!-- Plata recaudada (las dos sedes juntas) -->
+  <section class="card">
+    <h2>Plata recaudada <small class="muted">· las dos sedes juntas</small></h2>
+    <table class="tabla">
+      <thead><tr>
+        <th>Cancha</th><th>Turnos del día</th><th>Recaudado del día</th>
+        <th>Turnos del mes (<?= date('m/Y', $tsFecha) ?>)</th><th>Recaudado del mes</th>
+      </tr></thead>
+      <tbody>
+      <?php $totDia = $totMes = 0; foreach ($tiposResumen as $tp):
+        $d = $resumenDia[$tp] ?? ['n' => 0, 'total' => 0];
+        $m = $resumenMes[$tp] ?? ['n' => 0, 'total' => 0];
+        $totDia += $d['total']; $totMes += $m['total']; ?>
+        <tr>
+          <td><span class="tipo-tag"><?= h($tp) ?></span></td>
+          <td class="mono"><?= (int)$d['n'] ?></td>
+          <td class="mono"><?= plata($d['total']) ?></td>
+          <td class="mono"><?= (int)$m['n'] ?></td>
+          <td class="mono"><?= plata($m['total']) ?></td>
+        </tr>
+      <?php endforeach; ?>
+        <tr>
+          <td><b>Total</b></td><td></td>
+          <td class="mono"><b><?= plata($totDia) ?></b></td><td></td>
+          <td class="mono"><b><?= plata($totMes) ?></b></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <?php endif; ?>
 
   <!-- Listado por sede -->
   <?php foreach ($sedes as $s): ?>
