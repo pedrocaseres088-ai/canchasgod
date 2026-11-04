@@ -73,22 +73,21 @@ if ($tiposSede) {
 // datos viejos; ya no se carga desde el panel (se guarda vacía).
 $editando = ($id !== '' && ctype_digit((string)$id));
 
+// Precio del turno = precio por hora del tipo de cancha x cantidad de horas.
+// Se guarda dentro del turno: si cambian los precios, los totales viejos no se tocan.
+$horas  = (int)$fin - (int)$inicio;
+$precio = ($estado === 'reservado' && $tipo) ? (int)(($cfg['precios'][$tipo] ?? 0) * $horas) : 0;
+
 /* Vuelve al panel con un mensaje de error (en vez de una pantalla en blanco). */
 function volver_con_error($fecha, $msg) {
     header('Location: /admin/index.php?fecha=' . urlencode($fecha) . '&err=' . urlencode($msg));
     exit;
 }
 
-// Todo dentro de una transacción: bloqueamos la fila de la sede para que dos
-// personas que guardan a la vez no puedan reservar el mismo horario.
 $pdo->beginTransaction();
 try {
     $pdo->prepare("SELECT id FROM sedes WHERE id = ? FOR UPDATE")->execute([$sede_id]);
 
-    // Un turno "reservado" no puede pisarse con otro "reservado" en la misma
-    // sede, fecha y tipo de cancha. Hay superposición cuando:
-    //   nuevo.inicio < existente.fin  Y  nuevo.fin > existente.inicio
-    // (los turnos "libre" no ocupan la cancha, así que no bloquean).
     if ($estado === 'reservado') {
         $sql = "SELECT hora_inicio, hora_fin FROM turnos
                 WHERE sede_id = ? AND fecha = ? AND estado = 'reservado'
@@ -96,7 +95,7 @@ try {
                   AND hora_inicio < ? AND hora_fin > ?";
         $params = [$sede_id, $fecha, $tipo, $fin, $inicio];
         if ($editando) {
-            $sql .= " AND id <> ?";   // al editar, ignorar el propio turno
+            $sql .= " AND id <> ?";
             $params[] = (int)$id;
         }
         $sql .= " LIMIT 1";
@@ -116,16 +115,16 @@ try {
 
     if ($editando) {
         $stmt = $pdo->prepare(
-            "UPDATE turnos SET sede_id=?, fecha=?, hora_inicio=?, hora_fin=?, tipo_cancha=?, cliente=?, estado=?
+            "UPDATE turnos SET sede_id=?, fecha=?, hora_inicio=?, hora_fin=?, tipo_cancha=?, cliente=?, estado=?, precio=?
              WHERE id=?"
         );
-        $stmt->execute([$sede_id, $fecha, $inicio, $fin, $tipo, $cliente, $estado, (int)$id]);
+        $stmt->execute([$sede_id, $fecha, $inicio, $fin, $tipo, $cliente, $estado, $precio, (int)$id]);
     } else {
         $stmt = $pdo->prepare(
-            "INSERT INTO turnos (sede_id, fecha, hora_inicio, hora_fin, cancha, tipo_cancha, cliente, estado)
-             VALUES (?,?,?,?,?,?,?,?)"
+            "INSERT INTO turnos (sede_id, fecha, hora_inicio, hora_fin, cancha, tipo_cancha, cliente, estado, precio)
+             VALUES (?,?,?,?,?,?,?,?,?)"
         );
-        $stmt->execute([$sede_id, $fecha, $inicio, $fin, '', $tipo, $cliente, $estado]);
+        $stmt->execute([$sede_id, $fecha, $inicio, $fin, '', $tipo, $cliente, $estado, $precio]);
     }
     $pdo->commit();
 } catch (Throwable $e) {
