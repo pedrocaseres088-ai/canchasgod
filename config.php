@@ -52,4 +52,10 @@ return [
     // Ej: 8 = 08:00 es el primer turno; 24 = el último turno termina a las 24:00.
     'hora_apertura' => 8,
     'hora_cierre'   => 24,
+   
+    // Precio POR HORA de cada tipo de cancha (en pesos).
+    'precios' => [
+        'Fútbol 5'  => 58000,
+        'Fútbol 11' => 180000,
+    ],
 ];
